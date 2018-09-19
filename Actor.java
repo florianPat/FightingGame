@@ -21,6 +21,7 @@ public class Actor
         }
     }
 
+    //TODO: Implement sorting if you need it :)
     //public void sort(std::multimap<gomSort::SortKey, unsigned long long, gomSort::SortCompare>& sortedActors);
 
     // public long GetActorComponentId(int componentId) {

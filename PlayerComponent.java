@@ -225,7 +225,7 @@ public class PlayerComponent extends AnimationComponent {
 
         //apply updated body to physics
         physics.applySpriteToBoundingBox(current, collider, added);
-        collider.updateRectCollider(collider);
+        collider.updateRectCollider();
         
         bodySmash.pos = added;
         

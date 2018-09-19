@@ -33,7 +33,7 @@ public class Collider
 
         unionCollider.rect = rect;
 
-        updateRectCollider(this);
+        updateRectCollider();
     }
 
     public Collider(Circle circle)
@@ -43,7 +43,7 @@ public class Collider
 
         unionCollider.circle = circle;
 
-        updateCircleCollider(this);
+        updateCircleCollider();
     }
 
     public Type getType()
@@ -57,45 +57,43 @@ public class Collider
         unionCollider = new UnionCollider();
     }
 
-    public static void updateRectCollider(Collider collider)
+    public void updateRectCollider()
     {
-        assert(collider.type == Type.rect);
+        assert(type == Type.rect);
 
         float[] vertices = new float[4 * 2];
 
-        vertices[0] = collider.unionCollider.rect.getX();
-        vertices[1] = collider.unionCollider.rect.getY();
+        vertices[0] = unionCollider.rect.getX();
+        vertices[1] = unionCollider.rect.getY();
 
-        vertices[2] = collider.unionCollider.rect.getX() + collider.unionCollider.rect.getWidth();
-        vertices[3] = collider.unionCollider.rect.getY();
+        vertices[2] = unionCollider.rect.getX() + unionCollider.rect.getWidth();
+        vertices[3] = unionCollider.rect.getY();
 
-        vertices[4] = collider.unionCollider.rect.getX() + collider.unionCollider.rect.getWidth();
-        vertices[5] = collider.unionCollider.rect.getY() + collider.unionCollider.rect.getHeight();
+        vertices[4] = unionCollider.rect.getX() + unionCollider.rect.getWidth();
+        vertices[5] = unionCollider.rect.getY() + unionCollider.rect.getHeight();
 
-        vertices[6] = collider.unionCollider.rect.getX();
-        vertices[7] = collider.unionCollider.rect.getY() + collider.unionCollider.rect.getHeight();
+        vertices[6] = unionCollider.rect.getX();
+        vertices[7] = unionCollider.rect.getY() + unionCollider.rect.getHeight();
 
-        collider.unionCollider.polygon.setVertices(vertices);
+        unionCollider.polygon.setVertices(vertices);
     }
 
-    public static void updateCircleCollider(Collider colliderr)
+    public void updateCircleCollider()
     {
-        assert(colliderr.type == Type.circle);
-
-        UnionCollider collider = colliderr.unionCollider;
+        assert(type == Type.circle);
 
         //TODO: Ensure not to much segments!
-        int segments = Math.max(1, (int)(6 * (float)Math.cbrt(collider.circle.radius)));
+        int segments = Math.max(1, (int)(6 * (float)Math.cbrt(unionCollider.circle.radius)));
 
         float vertices[] = new float[segments * 2];
 
-        float x = collider.circle.x;
-        float y = collider.circle.y;
+        float x = unionCollider.circle.x;
+        float y = unionCollider.circle.y;
 
         float angle = 2 * MathUtils.PI / segments;
         float cos = MathUtils.cos(angle);
         float sin = MathUtils.sin(angle);
-        float cx = collider.circle.radius, cy = 0;
+        float cx = unionCollider.circle.radius, cy = 0;
 
         for (int i = 0, j = 0; i < segments; i++)
         {
@@ -107,7 +105,7 @@ public class Collider
             vertices[j++] = y + cy;
         }
 
-        collider.polygon.setVertices(vertices);
+        unionCollider.polygon.setVertices(vertices);
     }
 
     public boolean intersects(Collider other)

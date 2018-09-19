@@ -48,7 +48,7 @@ public class Tilemap {
                         && ((last.unionCollider.rect.y == pos.y)))
                 {
                     last.unionCollider.rect.merge(new Rectangle(pos.x, pos.y, texture.getWidth(), texture.getHeight()));
-                    last.updateRectCollider(last);
+                    last.updateRectCollider();
                 }
                 else
                 {

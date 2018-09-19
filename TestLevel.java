@@ -1,18 +1,9 @@
 
-
-
-/**
- * Write a description of class TestLevel here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
-
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.utils.viewport.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import  com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.Keys;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

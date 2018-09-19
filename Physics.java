@@ -32,18 +32,9 @@ public class Physics
         {
             if (bodyCollider.intersects(elementCollider))
             {
-                if (itBody.isTrigger)
-                {
-                    itBody.triggered = true;
-                    itBody.triggerInformation.triggerElementCollision = collisionElementBody.id;
-                    return;
-                }
-                else if (collisionElementBody.isTrigger)
-                {
-                    itBody.triggered = true;
-                    itBody.triggerInformation.triggerElementCollision = collisionElementBody.id;
-                    return;
-                }
+                itBody.triggered = true;
+                itBody.triggerInformation.triggerElementCollision = collisionElementBody.id;
+                return;
             }
         }
 
@@ -95,7 +86,8 @@ public class Physics
                 for (String collisionIdIt : it.physicsElments.get(0).collisionIds)
                 {
                     Body collideElementIt = bodies.get(collisionIdIt);
-                    if (collideElementIt != null)
+                    assert(collideElementIt != null);
+                    if (collideElementIt.getIsActive())
                     {
                         Body collideElementBody = collideElementIt;
                         Body itBody = it;
@@ -152,7 +144,7 @@ public class Physics
                             }
                             default:
                             {
-                                assert true;
+                                assert(false == true);
                             }
                         }
                     }
@@ -187,7 +179,7 @@ public class Physics
         else
         {
             Body pref = bodies.put(body.id, body);
-            assert pref == null;
+            assert(pref == null);
         }
     }
 
