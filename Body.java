@@ -62,7 +62,7 @@ public class Body
 
     public boolean getIsTriggered()
     {
-        return isTrigger;
+        return triggered;
     }
 
     public Vector2 getPos()

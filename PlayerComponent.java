@@ -44,6 +44,7 @@ public class PlayerComponent extends AnimationComponent {
     private Collider colliderSmash;
     private Body bodySmash;
     private Vector2 size;
+    private float yOffset;
     private Vector2 offset;
     
     // order left, top, right, bottom
@@ -90,14 +91,16 @@ public class PlayerComponent extends AnimationComponent {
         body = new Body(new Vector2(450 + (n == 0 ? 0 : 100), 600-32), "Player" + n, collider, s, false, false);
         physics.addElement(body);
         
-        rectSmash = new Rectangle(450+48.0f, 600-16, 16, 16);
+        size = new Vector2(16.0f, 16.0f);
+        rectSmash = new Rectangle(0.0f, 0.0f, size.x, size.y);
         colliderSmash = new Collider(rectSmash);
         ArrayList<String> sSmash = new ArrayList<String>();
         bodySmash = new Body(new Vector2(rectSmash.getX(), rectSmash.getY()), "PlayerSmashTrigger" + n, colliderSmash, sSmash, true, false);
         bodySmash.setIsActive(false);
         physics.addElement(bodySmash);
         
-        offset = new Vector2(16.0f, 0.0f);
+        yOffset = 8.0f;
+        offset = new Vector2(0.0f, yOffset);
         
         if(n == 0)
         {
@@ -133,6 +136,7 @@ public class PlayerComponent extends AnimationComponent {
                 current = animation.get("left-walk").getKeyFrame(stateTime, true);
             }
             walkState = WalkState.LEFT;
+            offset.x = 0.0f;
         }
         if(Gdx.input.isKeyPressed(input[2]))
         {
@@ -143,7 +147,9 @@ public class PlayerComponent extends AnimationComponent {
                 current = animation.get("right-walk").getKeyFrame(stateTime, true);
             }
             walkState = WalkState.RIGHT;
+            offset.x = 16.0f;
         }
+        //TODO: Implement isGrounded in Body
         if(Gdx.input.isKeyPressed(input[1]))
         {
             if(jumpState == JumpState.NONE)
@@ -199,6 +205,7 @@ public class PlayerComponent extends AnimationComponent {
 
         //set frame
         Vector2 added = body.pos.add(body.vel.scl(dt));
+        offset.y = yOffset;
 
         if(current == null || false)
         {
@@ -208,12 +215,14 @@ public class PlayerComponent extends AnimationComponent {
                 {
                     assert(animation.containsKey("left-walk"));
                     current = animation.get("left-walk").getKeyFrame(0.0f);
+                    offset.x = 0.0f;
                     break;
                 }
                 case RIGHT:
                 {
                     assert(animation.containsKey("right-walk"));
                     current = animation.get("right-walk").getKeyFrame(0.0f);
+                    offset.x = 16.0f;
                     break;
                 }
                 default:
@@ -227,10 +236,11 @@ public class PlayerComponent extends AnimationComponent {
         physics.applySpriteToBoundingBox(current, collider, added);
         collider.updateRectCollider();
         
-        bodySmash.pos = added;
-        
-        colliderSmash.unionCollider.rect.x = added.x;
-        colliderSmash.unionCollider.rect.y = added.y;
+        offset.add(added);
+        bodySmash.pos = offset;
+        rectSmash.x = offset.x;
+        rectSmash.y = offset.y;
+        colliderSmash.updateRectCollider();
     }
 
     @Override
