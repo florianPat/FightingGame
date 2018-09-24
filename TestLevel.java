@@ -15,9 +15,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class TestLevel extends Level
 {
-    public TestLevel()
+    public TestLevel(GameStart screenManager)
     {
-        super("maps/map2.txt");
+        super("maps/map2.txt", screenManager);
     }
     
     private void createPlayer(String playerName, int n)

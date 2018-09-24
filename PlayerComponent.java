@@ -65,6 +65,10 @@ public class PlayerComponent extends AnimationComponent {
     private final Color hitColor = Color.GOLDENROD;
     
     private Sprite sprite;
+    
+    private final float norHitPoints = 50.0f;
+    private float hitPoints = 1.0f;
+    private final float norPlusMultHitPoints = 0.5f;
 
     public PlayerComponent(EventManager eventManager, AssetManager assetManager, SpriteBatch spriteBatch, Physics physics, Actor owner, String[] textureAtlas, int n) {
         super(eventManager, assetManager, spriteBatch, physics, owner, textureAtlas);
@@ -181,7 +185,8 @@ public class PlayerComponent extends AnimationComponent {
                 hitVec.y = -hittingVecNor.y;
             }
             
-            hitVec.scl(300.0f);
+            hitVec.scl(norHitPoints * hitPoints);
+            hitPoints += norPlusMultHitPoints;
             lockMotion = true;
             getHit = true;
             sprite.setColor(hitColor);
@@ -216,6 +221,8 @@ public class PlayerComponent extends AnimationComponent {
                 hitVec.x = 0.0f;
                 hitVec.y = 0.0f;
                 getHit = false;
+                body.vel.x = 0.0f;
+                body.vel.y = physics.gravity * 2.0f;
             }
         }
         if(!lockMotion)

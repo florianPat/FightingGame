@@ -18,9 +18,11 @@ public abstract class Level implements Screen
     protected Tilemap map;
     protected String levelName;
     protected Physics physics;
+    protected GameStart screenManager;
 
-    public Level(String levelName)
+    public Level(String levelName, GameStart screenManager)
     {
+        this.screenManager = screenManager;
         this.levelName = levelName;
     }
 
