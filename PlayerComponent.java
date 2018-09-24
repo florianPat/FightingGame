@@ -14,8 +14,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.badlogic.gdx.graphics.Color;
 
 public class PlayerComponent extends AnimationComponent {
+    
+    protected float speed = 50.0f;
     private float stateTime = 0.0f;
 
     private enum WalkState
@@ -36,7 +39,7 @@ public class PlayerComponent extends AnimationComponent {
     private float maxJumpTime = 1.0f;
     
     private float smashTimer = 0.0f;
-    private float maxSmashTimer = 0.25f;
+    private final float maxSmashTimer = 0.25f;
     private JumpState smashState = JumpState.NONE;
     
     private Texture textureSmash;
@@ -49,9 +52,24 @@ public class PlayerComponent extends AnimationComponent {
     
     // order left, top, right, bottom
     private int input[] = new int[4];
+    
+    private int playerId;
+    private Function smashFunction;
+    private boolean lockMotion = false;
+    private final float maxHitTimer = 1.0f;
+    private final float maxLockMotionTimer = maxHitTimer / 2.0f;
+    private float hitTimer = 0.0f;
+    private Vector2 hitVec = new Vector2();
+    private Vector2 hittingVec;
+    private boolean getHit = false;
+    private final Color hitColor = Color.GOLDENROD;
+    
+    private Sprite sprite;
 
     public PlayerComponent(EventManager eventManager, AssetManager assetManager, SpriteBatch spriteBatch, Physics physics, Actor owner, String[] textureAtlas, int n) {
         super(eventManager, assetManager, spriteBatch, physics, owner, textureAtlas);
+        
+        playerId = n;
 
         //Load textures
         for(int i = 0; i < textureAtlas.length; ++i)
@@ -87,7 +105,6 @@ public class PlayerComponent extends AnimationComponent {
         collider = new Collider(rect);
         ArrayList<String> s = new ArrayList<String>();
         s.add("Ground");
-        s.add("PlayerSmashTrigger" + (n == 0 ? 1 : 0));
         body = new Body(new Vector2(450 + (n == 0 ? 0 : 100), 600-32), "Player" + n, collider, s, false, false);
         physics.addElement(body);
         
@@ -95,12 +112,18 @@ public class PlayerComponent extends AnimationComponent {
         rectSmash = new Rectangle(0.0f, 0.0f, size.x, size.y);
         colliderSmash = new Collider(rectSmash);
         ArrayList<String> sSmash = new ArrayList<String>();
+        sSmash.add("Player" + (n == 0 ? 1 : 0));
         bodySmash = new Body(new Vector2(rectSmash.getX(), rectSmash.getY()), "PlayerSmashTrigger" + n, colliderSmash, sSmash, true, false);
         bodySmash.setIsActive(false);
         physics.addElement(bodySmash);
         
         yOffset = 8.0f;
         offset = new Vector2(0.0f, yOffset);
+        hittingVec = new Vector2(1.0f, 0.0f);
+        
+        assert(animation.containsKey("right-walk"));
+        current = animation.get("right-walk").getKeyFrame(0.0f);
+        sprite = new Sprite(current);
         
         if(n == 0)
         {
@@ -116,10 +139,58 @@ public class PlayerComponent extends AnimationComponent {
             input[2] = Input.Keys.D;
             input[3] = Input.Keys.S;
         }
+        
+        smashFunction = new Function() {
+            @Override
+            public void Event(EventData eventData) {
+                assert(eventData instanceof SmashEventData);
+                SmashEventData event = (SmashEventData) eventData;
+                
+                int playerId = event.getPlayerId();
+                
+                if(playerId == getPlayerId())
+                {
+                    getAHit(event.getSmashHitDir());
+                }
+            }
+        };
+        
+        eventManager.addListener(SmashEventData.eventId, Utils.getDelegateFromFunction(smashFunction));
+    }
+    
+    public int getPlayerId()
+    {
+        return playerId;
+    }
+    
+    public void getAHit(Vector2 smashHitDir)
+    {
+        if(!lockMotion)
+        {
+            Vector2 smashHitDirNor = smashHitDir.nor();
+            Vector2 hittingVecNor = new Vector2(hittingVec).nor();
+            
+            if(smashHitDirNor.x != hittingVecNor.x)
+            {
+                hitVec.x = smashHitDirNor.x;
+                hitVec.y = -hittingVecNor.y;
+            }
+            else
+            {
+                hitVec.x = hittingVecNor.x;
+                hitVec.y = -hittingVecNor.y;
+            }
+            
+            hitVec.scl(300.0f);
+            lockMotion = true;
+            getHit = true;
+            sprite.setColor(hitColor);
+        }
     }
 
     @Override
     public void update(float dt) {
+        
         //move
         body.vel.x = 0.0f;
         body.vel.y += physics.gravity;
@@ -127,80 +198,108 @@ public class PlayerComponent extends AnimationComponent {
         stateTime += dt;
         current = null;
 
-        if(Gdx.input.isKeyPressed(input[0]) && body.pos.x >= 0)
+        if(getHit)
         {
-            body.vel.x = -speed;
-            if(jumpState == JumpState.NONE)
+            body.vel.x = hitVec.x;
+            body.vel.y = hitVec.y;
+            hitTimer += dt;
+            
+            if(hitTimer >= maxLockMotionTimer)
             {
-                assert(animation.containsKey("left-walk"));
-                current = animation.get("left-walk").getKeyFrame(stateTime, true);
+                lockMotion = false;
+                sprite.setColor(Color.WHITE);
             }
-            walkState = WalkState.LEFT;
-            offset.x = 0.0f;
-        }
-        if(Gdx.input.isKeyPressed(input[2]))
-        {
-            body.vel.x = speed;
-            if(jumpState == JumpState.NONE)
+            
+            if(hitTimer >= maxHitTimer)
             {
-                assert (animation.containsKey("right-walk"));
-                current = animation.get("right-walk").getKeyFrame(stateTime, true);
-            }
-            walkState = WalkState.RIGHT;
-            offset.x = 16.0f;
-        }
-        //TODO: Implement isGrounded in Body
-        if(Gdx.input.isKeyPressed(input[1]))
-        {
-            if(jumpState == JumpState.NONE)
-            {
-                jumpState = JumpState.JUMPING;
+                hitTimer = 0.0f;
+                hitVec.x = 0.0f;
+                hitVec.y = 0.0f;
+                getHit = false;
             }
         }
-
-        if(jumpState == JumpState.JUMPING)
+        if(!lockMotion)
         {
-            jumpTimer += dt;
-            body.vel.y = speed;
-            if(jumpTimer >= maxJumpTime)
+            if(Gdx.input.isKeyPressed(input[0]) && body.pos.x >= 0)
             {
-                jumpTimer = 0.0f;
-                jumpState = JumpState.FALLING;
+                body.vel.x = -speed;
+                hittingVec.x = -1.0f;
+                if(jumpState == JumpState.NONE)
+                {
+                    assert(animation.containsKey("left-walk"));
+                    current = animation.get("left-walk").getKeyFrame(stateTime, true);
+                }
+                walkState = WalkState.LEFT;
+                offset.x = 0.0f;
             }
-        }
-        else if(jumpState == JumpState.FALLING)
-        {
-            if(body.triggerInformation.triggerBodyPart == Physics.TriggerBodyPart.SHOES)
+            if(Gdx.input.isKeyPressed(input[2]))
             {
-                jumpState = JumpState.NONE;
+                body.vel.x = speed;
+                hittingVec.x = 1.0f;
+                if(jumpState == JumpState.NONE)
+                {
+                    assert (animation.containsKey("right-walk"));
+                    current = animation.get("right-walk").getKeyFrame(stateTime, true);
+                }
+                walkState = WalkState.RIGHT;
+                offset.x = 16.0f;
             }
-        }
-
-        //fighting
-        if(Gdx.input.isKeyPressed(input[3]))
-        {
-            if(smashState == JumpState.NONE)
+            //TODO: Implement isGrounded in Body
+            if(Gdx.input.isKeyPressed(input[1]))
+            {
+                if(jumpState == JumpState.NONE && body.triggerInformation.triggerBodyPart == Physics.TriggerBodyPart.SHOES)
+                {
+                    jumpState = JumpState.JUMPING;
+                }
+            }
+    
+            if(jumpState == JumpState.JUMPING)
+            {
+                jumpTimer += dt;
+                body.vel.y = speed;
+                hittingVec.y = 1.0f;
+                if(jumpTimer >= maxJumpTime)
+                {
+                    jumpTimer = 0.0f;
+                    jumpState = JumpState.FALLING;
+                }
+            }
+            else if(jumpState == JumpState.FALLING)
+            {
+                hittingVec.y = -1.0f;
+                if(body.triggerInformation.triggerBodyPart == Physics.TriggerBodyPart.SHOES)
+                {
+                    jumpState = JumpState.NONE;
+                    hittingVec.y = 0.0f;
+                }
+            }
+    
+            //fighting
+            if(Gdx.input.isKeyPressed(input[3]))
+            {
+                if(smashState == JumpState.NONE)
+                {
+                    current = textureSmash;
+                    bodySmash.setIsActive(true);
+                    smashState = JumpState.JUMPING;
+                }
+            }
+            else if(smashState == JumpState.JUMPING)
             {
                 current = textureSmash;
-                bodySmash.setIsActive(true);
-                smashState = JumpState.JUMPING;
-            }
-        }
-        else if(smashState == JumpState.JUMPING)
-        {
-            current = textureSmash;
-            smashTimer += dt;
-            if(smashTimer > maxSmashTimer)
-            {
-                smashTimer = 0.0f;
-                smashState = JumpState.NONE;
-                bodySmash.setIsActive(false);
+                smashTimer += dt;
+                if(smashTimer > maxSmashTimer)
+                {
+                    smashTimer = 0.0f;
+                    smashState = JumpState.NONE;
+                    bodySmash.setIsActive(false);
+                }
             }
         }
         
-        if(body.getIsTriggered())
+        if(bodySmash.getIsTriggered())
         {
-            System.out.println("Bamm");
+            eventManager.TriggerEvent(new SmashEventData(playerId == 0 ? 1 : 0, hittingVec));
         }
 
         //set frame
@@ -231,6 +330,8 @@ public class PlayerComponent extends AnimationComponent {
                 }
             }
         }
+        
+        sprite.setTexture(current);
 
         //apply updated body to physics
         physics.applySpriteToBoundingBox(current, collider, added);
@@ -245,6 +346,7 @@ public class PlayerComponent extends AnimationComponent {
 
     @Override
     public void draw() {
-        spriteBatch.draw(current, body.pos.x, body.pos.y);
+        sprite.setPosition(body.pos.x, body.pos.y);
+        sprite.draw(spriteBatch);
     }
 }

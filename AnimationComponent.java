@@ -25,8 +25,7 @@ public class AnimationComponent extends Component {
     protected Rectangle rect;
     protected Collider collider;
     protected Body body;
-
-    protected float speed = 50.0f;
+    
     protected Texture current;
 
     public AnimationComponent(EventManager eventManager, AssetManager assetManager, SpriteBatch spriteBatch, Physics physics, Actor owner, String[] textureAtlas) {

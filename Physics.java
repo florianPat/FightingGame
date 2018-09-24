@@ -3,7 +3,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -77,7 +76,7 @@ public class Physics
         for (Iterator<Body> iterator = bodies.values().iterator(); iterator.hasNext();)
         {
             Body it = iterator.next();
-            if (it.isActive && (!it.isStatic || it.isTrigger))
+            if (it.isActive && (!it.isStatic))
             {
                 it.triggered = false;
                 it.triggerInformation.triggerElementCollision = "";
