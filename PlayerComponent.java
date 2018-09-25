@@ -18,7 +18,7 @@ import java.util.HashMap;
 import com.badlogic.gdx.graphics.Color;
 
 public class PlayerComponent extends AnimationComponent {
-    
+
     protected float speed = 50.0f;
     private float stateTime = 0.0f;
 
@@ -38,11 +38,11 @@ public class PlayerComponent extends AnimationComponent {
     private JumpState jumpState = JumpState.NONE;
     private float jumpTimer = 0.0f;
     private float maxJumpTime = 1.0f;
-    
+
     private float smashTimer = 0.0f;
     private final float maxSmashTimer = 0.25f;
     private JumpState smashState = JumpState.NONE;
-    
+
     private Texture textureSmash;
     private Rectangle rectSmash;
     private Collider colliderSmash;
@@ -50,10 +50,10 @@ public class PlayerComponent extends AnimationComponent {
     private Vector2 size;
     private float yOffset;
     private Vector2 offset;
-    
+
     // order left, top, right, bottom
     private int input[] = new int[4];
-    
+
     private int playerId;
     private Function smashFunction;
     private boolean lockMotion = false;
@@ -64,17 +64,23 @@ public class PlayerComponent extends AnimationComponent {
     private Vector2 hittingVec;
     private boolean getHit = false;
     private final Color hitColor = Color.GOLDENROD;
-    
+
     private Sprite sprite;
-    
+
     private final float norHitPoints = 50.0f;
     private float hitPoints = 1.0f;
     private final float norPlusMultHitPoints = 0.5f;
 
-    public PlayerComponent(EventManager eventManager, AssetManager assetManager, SpriteBatch spriteBatch, Physics physics, Actor owner, String[] textureAtlas, int n) {
+    private float worldWidth, worldHeight;
+
+    public PlayerComponent(EventManager eventManager, AssetManager assetManager, SpriteBatch spriteBatch, Physics physics, Actor owner, String[] textureAtlas,
+                           int n, float worldWidthIn, float worldHeightIn) {
         super(eventManager, assetManager, spriteBatch, physics, owner, textureAtlas);
-        
+
         playerId = n;
+
+        worldWidth = worldWidthIn;
+        worldHeight = worldHeightIn;
 
         //Load textures
         for(int i = 0; i < textureAtlas.length; ++i)
@@ -102,7 +108,7 @@ public class PlayerComponent extends AnimationComponent {
             atlas.add(t);
         }
         animation.put("right-walk", new Animation<Texture>(0.3f, atlas, Animation.PlayMode.LOOP));
-        
+
         textureSmash = assetManager.get(textureAtlas[8]);
 
         //create body
@@ -112,7 +118,7 @@ public class PlayerComponent extends AnimationComponent {
         s.add("Ground");
         body = new Body(new Vector2(450 + (n == 0 ? 0 : 100), 600-32), "Player" + n, collider, s, false, false);
         physics.addElement(body);
-        
+
         size = new Vector2(16.0f, 16.0f);
         rectSmash = new Rectangle(0.0f, 0.0f, size.x, size.y);
         colliderSmash = new Collider(rectSmash);
@@ -121,15 +127,15 @@ public class PlayerComponent extends AnimationComponent {
         bodySmash = new Body(new Vector2(rectSmash.getX(), rectSmash.getY()), "PlayerSmashTrigger" + n, colliderSmash, sSmash, true, false);
         bodySmash.setIsActive(false);
         physics.addElement(bodySmash);
-        
+
         yOffset = 8.0f;
         offset = new Vector2(0.0f, yOffset);
         hittingVec = new Vector2(1.0f, 0.0f);
-        
+
         assert(animation.containsKey("right-walk"));
         current = animation.get("right-walk").getKeyFrame(0.0f);
         sprite = new Sprite(current);
-        
+
         if(n == 0)
         {
             input[0] = Input.Keys.LEFT;
@@ -144,37 +150,37 @@ public class PlayerComponent extends AnimationComponent {
             input[2] = Input.Keys.D;
             input[3] = Input.Keys.S;
         }
-        
+
         smashFunction = new Function() {
             @Override
             public void Event(EventData eventData) {
                 assert(eventData instanceof SmashEventData);
                 SmashEventData event = (SmashEventData) eventData;
-                
+
                 int playerId = event.getPlayerId();
-                
+
                 if(playerId == getPlayerId())
                 {
                     getAHit(event.getSmashHitDir());
                 }
             }
         };
-        
+
         eventManager.addListener(SmashEventData.eventId, Utils.getDelegateFromFunction(smashFunction));
     }
-    
+
     public int getPlayerId()
     {
         return playerId;
     }
-    
+
     public void getAHit(Vector2 smashHitDir)
     {
         if(!getHit)
         {
             Vector2 smashHitDirNor = smashHitDir.nor();
             Vector2 hittingVecNor = new Vector2(hittingVec).nor();
-            
+
             if(smashHitDirNor.x != hittingVecNor.x)
             {
                 hitVec.x = smashHitDirNor.x;
@@ -185,7 +191,7 @@ public class PlayerComponent extends AnimationComponent {
                 hitVec.x = hittingVecNor.x;
                 hitVec.y = -hittingVecNor.y;
             }
-            
+
             hitVec.scl(norHitPoints * hitPoints);
             hitPoints += norPlusMultHitPoints;
             lockMotion = true;
@@ -196,7 +202,7 @@ public class PlayerComponent extends AnimationComponent {
 
     @Override
     public void update(float dt) {
-        
+
         //move
         body.vel.x = 0.0f;
         body.vel.y += physics.gravity;
@@ -209,13 +215,13 @@ public class PlayerComponent extends AnimationComponent {
             body.vel.x = hitVec.x;
             body.vel.y = hitVec.y;
             hitTimer += dt;
-            
+
             if(hitTimer >= maxLockMotionTimer)
             {
                 lockMotion = false;
                 sprite.setColor(Color.WHITE);
             }
-            
+
             if(hitTimer >= maxHitTimer)
             {
                 hitTimer = 0.0f;
@@ -252,7 +258,7 @@ public class PlayerComponent extends AnimationComponent {
                 walkState = WalkState.RIGHT;
                 offset.x = 16.0f;
             }
-            
+
             if(Gdx.input.isKeyPressed(input[1]))
             {
                 if(jumpState == JumpState.NONE && body.triggerInformation.triggerBodyPart == Physics.TriggerBodyPart.SHOES)
@@ -260,7 +266,7 @@ public class PlayerComponent extends AnimationComponent {
                     jumpState = JumpState.JUMPING;
                 }
             }
-    
+
             if(jumpState == JumpState.JUMPING)
             {
                 jumpTimer += dt;
@@ -281,7 +287,7 @@ public class PlayerComponent extends AnimationComponent {
                     hittingVec.y = 0.0f;
                 }
             }
-    
+
             //fighting
             //isKeyJustPressed for that you have to press hit every time you want to hit your enemy and do not just hold down the key
             if(Gdx.input.isKeyJustPressed(input[3]))
@@ -305,15 +311,20 @@ public class PlayerComponent extends AnimationComponent {
                 }
             }
         }
-        
+
         if(bodySmash.getIsTriggered())
         {
             eventManager.TriggerEvent(new SmashEventData(playerId == 0 ? 1 : 0, hittingVec));
         }
 
         //set frame
-        Vector2 added = body.pos.add(body.vel.scl(dt));
+        Vector2 newPos = body.pos.add(body.vel.scl(dt));
         offset.y = yOffset;
+
+        if(newPos.x < 0.0f || newPos.x >= worldWidth || newPos.y < 0.0f || newPos.y >= worldHeight)
+        {
+            eventManager.TriggerEvent(new DeadEventData(playerId));
+        }
 
         if(current == null || false)
         {
@@ -339,14 +350,14 @@ public class PlayerComponent extends AnimationComponent {
                 }
             }
         }
-        
+
         sprite.setTexture(current);
 
         //apply updated body to physics
-        physics.applySpriteToBoundingBox(current, collider, added);
+        physics.applySpriteToBoundingBox(current, collider, newPos);
         collider.updateRectCollider();
-        
-        offset.add(added);
+
+        offset.add(newPos);
         bodySmash.pos = offset;
         rectSmash.x = offset.x;
         rectSmash.y = offset.y;

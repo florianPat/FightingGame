@@ -15,11 +15,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class TestLevel extends Level
 {
-    public TestLevel(GameStart screenManager)
+    private final int playerCount = 2;
+    private Function deadFlaggedFunction;
+
+    public TestLevel(GameStart screenManager, Vector2 worldSize)
     {
-        super("maps/map2.txt", screenManager);
+        super("maps/map2.txt", screenManager, worldSize);
     }
-    
+
     private void createPlayer(String playerName, int n)
     {
         String[] textureAtlas = new String[9];
@@ -28,14 +31,31 @@ public class TestLevel extends Level
             textureAtlas[i] = playerName + "/" + (i+1) + ".png";
         }
         Actor actor = gom.addActor();
-        actor.addComponent(new PlayerComponent(eventManager, assetManager, spriteBatch, physics, actor, textureAtlas, n));
+        actor.addComponent(new PlayerComponent(eventManager, assetManager, spriteBatch, physics, actor, textureAtlas, n, worldSize.x, worldSize.y));
     }
 
     @Override
     public void create()
     {
-        createPlayer("player1", 0);
-        createPlayer("player1", 1);
+        for(int i = 0; i < playerCount; ++i)
+        {
+            createPlayer("player1", i);
+        }
+
+        deadFlaggedFunction = new Function() {
+            @Override
+            public void Event(EventData eventData) {
+                assert(eventData instanceof DeadEventData);
+                DeadEventData event = (DeadEventData) eventData;
+
+                int playerId = event.getPlayerId();
+
+                System.out.println("Player " + playerId + " is dead!");
+                // screenManager.setScreen(new GameOverScreen(playerId));
+            }
+        };
+
+        eventManager.addListener(DeadEventData.eventId, Utils.getDelegateFromFunction(deadFlaggedFunction));
     }
 
     @Override

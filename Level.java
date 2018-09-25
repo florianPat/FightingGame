@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.assets.loaders.resolvers.*;
+import com.badlogic.gdx.math.Vector2;
 
 public abstract class Level implements Screen
 {
@@ -19,11 +20,13 @@ public abstract class Level implements Screen
     protected String levelName;
     protected Physics physics;
     protected GameStart screenManager;
+    protected Vector2 worldSize;
 
-    public Level(String levelName, GameStart screenManager)
+    public Level(String levelName, GameStart screenManager, Vector2 worldSize)
     {
         this.screenManager = screenManager;
         this.levelName = levelName;
+        this.worldSize = worldSize;
     }
 
     public abstract void create();
