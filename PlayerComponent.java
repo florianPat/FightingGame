@@ -1,3 +1,4 @@
+//NOTE: Sometimes bug that triggered gets called if not triggered!
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -169,7 +170,7 @@ public class PlayerComponent extends AnimationComponent {
     
     public void getAHit(Vector2 smashHitDir)
     {
-        if(!lockMotion)
+        if(!getHit)
         {
             Vector2 smashHitDirNor = smashHitDir.nor();
             Vector2 hittingVecNor = new Vector2(hittingVec).nor();
@@ -251,7 +252,7 @@ public class PlayerComponent extends AnimationComponent {
                 walkState = WalkState.RIGHT;
                 offset.x = 16.0f;
             }
-            //TODO: Implement isGrounded in Body
+            
             if(Gdx.input.isKeyPressed(input[1]))
             {
                 if(jumpState == JumpState.NONE && body.triggerInformation.triggerBodyPart == Physics.TriggerBodyPart.SHOES)
@@ -282,7 +283,8 @@ public class PlayerComponent extends AnimationComponent {
             }
     
             //fighting
-            if(Gdx.input.isKeyPressed(input[3]))
+            //isKeyJustPressed for that you have to press hit every time you want to hit your enemy and do not just hold down the key
+            if(Gdx.input.isKeyJustPressed(input[3]))
             {
                 if(smashState == JumpState.NONE)
                 {
