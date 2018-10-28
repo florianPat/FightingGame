@@ -1,12 +1,15 @@
 
+
 import java.io.*;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -102,15 +105,16 @@ public class Tilemap {
         }
         catch(IOException e)
         {
+            Utils.logBreak("Failed to init map!");
             erstelleKarte();
         }
     }
 
     private void ladeKarte(String dateiname) throws IOException
     {
-        File file = new File(dateiname);
-        FileReader fr = new FileReader(file);
-        BufferedReader br = new BufferedReader(fr);
+        FileHandle file = Gdx.files.internal(dateiname);
+        assert (file.exists());
+        BufferedReader br = file.reader((int) file.length());
 
         String zeile = br.readLine();
 
@@ -145,7 +149,7 @@ public class Tilemap {
                 }
                 else
                 {
-                    Utils.utilsLog("Tilemap loadMap error!");
+                    Utils.log("Tilemap loadMap error!");
                 }
             }
             zeile = br.readLine();
@@ -182,7 +186,7 @@ public class Tilemap {
                 }
                 else
                 {
-                    Utils.utilsLog("Tilemap createMap error!");
+                    Utils.log("Tilemap createMap error!");
                 }
             }
         }

@@ -21,6 +21,7 @@ public abstract class Level implements Screen
     protected Physics physics;
     protected GameStart screenManager;
     protected Vector2 worldSize;
+    protected OnScreenControls onScreenControls;
 
     public Level(String levelName, GameStart screenManager, Vector2 worldSize)
     {
@@ -34,18 +35,21 @@ public abstract class Level implements Screen
     @Override
     public void show()
     {
-        viewport = new ExtendViewport(900, 600);
+        viewport = new ExtendViewport(worldSize.x, worldSize.y);
         spriteBatch = new SpriteBatch();
         gom = new GameObjectManager();
         eventManager = new EventManager();
         physics = new Physics();
         assetManager = new AssetManager();
 
+        onScreenControls = new OnScreenControls();
+        Gdx.input.setInputProcessor(onScreenControls);
+
         create();
 
-        assetManager.finishLoading();
-
         map = new Tilemap(levelName, assetManager, physics);
+
+        assetManager.finishLoading();
     }
 
     @Override
@@ -59,22 +63,32 @@ public abstract class Level implements Screen
         Gdx.gl.glClearColor( 0, 0, 0, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
+        // viewport.apply();
+        // spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
+
         spriteBatch.begin();
         map.draw(spriteBatch);
         gom.drawActors();
         spriteBatch.end();
+
+        onScreenControls.render();
     }
 
     @Override
     public void dispose()
     {
+        spriteBatch.dispose();
         assetManager.dispose();
+        physics.dispose();
     }
 
     @Override
     public void resize(int width, int height)
     {
-        //viewport.update(width, height);
+        //NOTE: all update, apply and setProjectionMatrix calls do not work properly :/
+        // viewport.update(width, height, true);
+        // onScreenControls.viewport.update(width, height, true);
+        // onScreenControls.recalculateButtonPositions();
     }
 
     @Override

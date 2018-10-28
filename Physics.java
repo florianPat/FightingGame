@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Physics
 {
@@ -113,10 +114,11 @@ public class Physics
         }
     }
 
-    public void debugRenderBodies()
+    public void debugRenderBodies(Viewport viewport)
     {
         if(!bodies.isEmpty())
         {
+            // shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
             for (Iterator<Body> iterator = bodies.values().iterator(); iterator.hasNext();)
@@ -143,7 +145,7 @@ public class Physics
                             }
                             default:
                             {
-                                assert(false == true);
+                                Utils.invalidCodePath();
                             }
                         }
                     }
@@ -167,7 +169,7 @@ public class Physics
 
             if(bodies.containsValue(body))
             {
-                Utils.utilsLog("Physics.addElement: tried to add an object twice!!");
+                Utils.log("Physics.addElement: tried to add an object twice!!");
             }
             else
             {

@@ -1,4 +1,5 @@
 
+
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.utils.viewport.*;
 import com.badlogic.gdx.*;
@@ -31,7 +32,8 @@ public class TestLevel extends Level
             textureAtlas[i] = playerName + "/" + (i+1) + ".png";
         }
         Actor actor = gom.addActor();
-        actor.addComponent(new PlayerComponent(eventManager, assetManager, spriteBatch, physics, actor, textureAtlas, n, worldSize.x, worldSize.y));
+        actor.addComponent(new PlayerComponent(eventManager, assetManager, spriteBatch, physics,
+                actor, textureAtlas, n, worldSize.x, worldSize.y, onScreenControls.input));
     }
 
     @Override
@@ -50,7 +52,7 @@ public class TestLevel extends Level
 
                 int playerId = event.getPlayerId();
 
-                System.out.println("Player " + playerId + " is dead!");
+                Utils.log("Player " + playerId + " is dead!");
                 // screenManager.setScreen(new GameOverScreen(playerId));
             }
         };
@@ -62,16 +64,23 @@ public class TestLevel extends Level
     public void render(float dt)
     {
         gom.updateActors(dt);
+        eventManager.removeListeners();
+
         physics.update(dt);
 
         Gdx.gl.glClearColor( 0, 0, 0, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
+
+        // viewport.apply();
+        // spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
         spriteBatch.begin();
         map.draw(spriteBatch);
         gom.drawActors();
         spriteBatch.end();
 
-        physics.debugRenderBodies();
+        physics.debugRenderBodies(viewport);
+
+        onScreenControls.render();
     }
 }

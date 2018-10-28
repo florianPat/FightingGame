@@ -16,7 +16,7 @@ public class AnotherTestComponent extends Component {
             public void Event(EventData eventData) {
                 assert (eventData instanceof EventTest);
                 EventTest event = (EventTest) eventData;
-                System.out.println(event.getTest());
+                Utils.log(event.getTest());
             }
         };
 

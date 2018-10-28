@@ -130,11 +130,11 @@ public class Collider
             }
             else
             {
-                assert true;
+                Utils.invalidCodePath();
             }
         }
 
-        assert(true);
+        Utils.invalidCodePath();
         return true;
     }
 

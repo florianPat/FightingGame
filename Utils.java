@@ -1,13 +1,18 @@
 
+
+import com.badlogic.gdx.Gdx;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Utils
 {
     private static final AtomicInteger counter = new AtomicInteger();
 
-    public static void utilsLog(String msg) {
-        System.err.println(msg);
-    }
+    public static void log(String msg) { Gdx.app.log("UtilsLog", msg); }
+
+    public static void logBreak(String msg) { Gdx.app.error("UtilsLogBreak", msg); }
+
+    public static void invalidCodePath() { assert(true == false); }
 
     public static long Kilobyte(long x) {
         return x * 1024l;

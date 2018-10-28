@@ -1,4 +1,3 @@
-//NOTE: Sometimes bug that triggered gets called if not triggered!
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -40,7 +39,7 @@ public class PlayerComponent extends AnimationComponent {
     private float maxJumpTime = 1.0f;
 
     private float smashTimer = 0.0f;
-    private final float maxSmashTimer = 0.25f;
+    private final float maxSmashTimer = 1.0f;
     private JumpState smashState = JumpState.NONE;
 
     private Texture textureSmash;
@@ -73,14 +72,18 @@ public class PlayerComponent extends AnimationComponent {
 
     private float worldWidth, worldHeight;
 
+    private OnScreenControls.InputSystem inputSystem;
+
     public PlayerComponent(EventManager eventManager, AssetManager assetManager, SpriteBatch spriteBatch, Physics physics, Actor owner, String[] textureAtlas,
-                           int n, float worldWidthIn, float worldHeightIn) {
+                           int n, float worldWidthIn, float worldHeightIn, OnScreenControls.InputSystem inputSystemIn) {
         super(eventManager, assetManager, spriteBatch, physics, owner, textureAtlas);
 
         playerId = n;
 
         worldWidth = worldWidthIn;
         worldHeight = worldHeightIn;
+
+        inputSystem = inputSystemIn;
 
         //Load textures
         for(int i = 0; i < textureAtlas.length; ++i)
@@ -178,7 +181,7 @@ public class PlayerComponent extends AnimationComponent {
     {
         if(!getHit)
         {
-            Vector2 smashHitDirNor = smashHitDir.nor();
+            Vector2 smashHitDirNor = new Vector2(smashHitDir).nor();
             Vector2 hittingVecNor = new Vector2(hittingVec).nor();
 
             if(smashHitDirNor.x != hittingVecNor.x)
@@ -232,9 +235,13 @@ public class PlayerComponent extends AnimationComponent {
                 body.vel.y = physics.gravity * 2.0f;
             }
         }
-        if(!lockMotion)
+
+        //NOTE: If we do not want that you can walk if you hit, delete the && smashState == JumpS...
+        if((!lockMotion) && smashState == JumpState.NONE)
         {
-            if(Gdx.input.isKeyPressed(input[0]) && body.pos.x >= 0)
+            //NOTE: For split screen mutiplayer comment out this section in every input if
+            /*                                                */
+            if(playerId == 0 ? inputSystem.isMoveLeftPressed() : Gdx.input.isKeyPressed(input[0]))
             {
                 body.vel.x = -speed;
                 hittingVec.x = -1.0f;
@@ -246,7 +253,7 @@ public class PlayerComponent extends AnimationComponent {
                 walkState = WalkState.LEFT;
                 offset.x = 0.0f;
             }
-            if(Gdx.input.isKeyPressed(input[2]))
+            if(playerId == 0 ? inputSystem.isMoveRightPressed() : Gdx.input.isKeyPressed(input[2]))
             {
                 body.vel.x = speed;
                 hittingVec.x = 1.0f;
@@ -259,7 +266,7 @@ public class PlayerComponent extends AnimationComponent {
                 offset.x = 16.0f;
             }
 
-            if(Gdx.input.isKeyPressed(input[1]))
+            if(playerId == 0 ? inputSystem.isJumpPressed() : Gdx.input.isKeyPressed(input[1]))
             {
                 if(jumpState == JumpState.NONE && body.triggerInformation.triggerBodyPart == Physics.TriggerBodyPart.SHOES)
                 {
@@ -289,26 +296,24 @@ public class PlayerComponent extends AnimationComponent {
             }
 
             //fighting
-            //isKeyJustPressed for that you have to press hit every time you want to hit your enemy and do not just hold down the key
-            if(Gdx.input.isKeyJustPressed(input[3]))
-            {
-                if(smashState == JumpState.NONE)
-                {
-                    current = textureSmash;
-                    bodySmash.setIsActive(true);
-                    smashState = JumpState.JUMPING;
-                }
-            }
-            else if(smashState == JumpState.JUMPING)
+            if(playerId == 0 ? inputSystem.isHitPressed() : Gdx.input.isKeyJustPressed(input[3])
+                && smashState == JumpState.NONE)
             {
                 current = textureSmash;
-                smashTimer += dt;
-                if(smashTimer > maxSmashTimer)
-                {
-                    smashTimer = 0.0f;
-                    smashState = JumpState.NONE;
-                    bodySmash.setIsActive(false);
-                }
+                bodySmash.setIsActive(true);
+                smashState = JumpState.JUMPING;
+            }
+        }
+
+        if(smashState == JumpState.JUMPING)
+        {
+            current = textureSmash;
+            smashTimer += dt;
+            if(smashTimer > maxSmashTimer)
+            {
+                smashTimer = 0.0f;
+                smashState = JumpState.NONE;
+                bodySmash.setIsActive(false);
             }
         }
 
@@ -346,7 +351,7 @@ public class PlayerComponent extends AnimationComponent {
                 }
                 default:
                 {
-                    assert(false == true);
+                    Utils.invalidCodePath();
                 }
             }
         }
