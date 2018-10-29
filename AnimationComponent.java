@@ -25,11 +25,38 @@ public class AnimationComponent extends Component {
     protected Rectangle rect;
     protected Collider collider;
     protected Body body;
-    
+
     protected Texture current;
 
     public AnimationComponent(EventManager eventManager, AssetManager assetManager, SpriteBatch spriteBatch, Physics physics, Actor owner, String[] textureAtlas) {
         super(ID, eventManager, assetManager, spriteBatch, physics, owner);
+
+        //Load textures
+        for(int i = 0; i < textureAtlas.length; ++i)
+        {
+            assetManager.load(textureAtlas[i], Texture.class);
+        }
+        assetManager.finishLoading();
+
+        animation = new HashMap<String, Animation<Texture>>();
+
+        //create left-walk
+        atlas = new Array<Texture>();
+        for(int i = 3; i < 6; ++i)
+        {
+            Texture t = assetManager.get(textureAtlas[i]);
+            atlas.add(t);
+        }
+        animation.put("left-walk", new Animation<Texture>(0.3f, atlas, Animation.PlayMode.LOOP));
+
+        //create right-walk
+        atlas.clear();
+        for(int i = 6; i < 9; ++i)
+        {
+            Texture t = assetManager.get(textureAtlas[i]);
+            atlas.add(t);
+        }
+        animation.put("right-walk", new Animation<Texture>(0.3f, atlas, Animation.PlayMode.LOOP));
     }
 
     @Override

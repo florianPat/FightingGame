@@ -85,33 +85,6 @@ public class PlayerComponent extends AnimationComponent {
 
         inputSystem = inputSystemIn;
 
-        //Load textures
-        for(int i = 0; i < textureAtlas.length; ++i)
-        {
-            assetManager.load(textureAtlas[i], Texture.class);
-        }
-        assetManager.finishLoading();
-
-        animation = new HashMap<String, Animation<Texture>>();
-
-        //create left-walk
-        atlas = new Array<Texture>();
-        for(int i = 3; i < 6; ++i)
-        {
-            Texture t = assetManager.get(textureAtlas[i]);
-            atlas.add(t);
-        }
-        animation.put("left-walk", new Animation<Texture>(0.3f, atlas, Animation.PlayMode.LOOP));
-
-        //create right-walk
-        atlas.clear();
-        for(int i = 6; i < 9; ++i)
-        {
-            Texture t = assetManager.get(textureAtlas[i]);
-            atlas.add(t);
-        }
-        animation.put("right-walk", new Animation<Texture>(0.3f, atlas, Animation.PlayMode.LOOP));
-
         textureSmash = assetManager.get(textureAtlas[8]);
 
         //create body
