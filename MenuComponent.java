@@ -34,4 +34,9 @@ abstract class MenuComponent extends InputAdapter
     }
 
     abstract public void debugRenderBtns();
+
+    public void dispose()
+    {
+        renderer.dispose();
+    }
 }

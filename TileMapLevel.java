@@ -60,4 +60,12 @@ public class TileMapLevel extends Level
         onScreenControls.viewport.update(width, height, true);
         onScreenControls.recalculateButtonPositions();
     }
+
+    @Override
+    public void dispose()
+    {
+        super.dispose();
+
+        onScreenControls.dispose();
+    }
 }

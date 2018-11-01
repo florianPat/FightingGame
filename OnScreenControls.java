@@ -223,4 +223,9 @@ public class OnScreenControls extends InputAdapter
         hitCenter.set(viewport.getWorldWidth() - xPosPart * 2, yPos);
         jumpCenter.set(viewport.getWorldWidth() - xPosPart, yPos);
     }
+
+    public void dispose()
+    {
+        renderer.dispose();
+    }
 }

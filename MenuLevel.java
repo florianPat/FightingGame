@@ -84,4 +84,12 @@ public class MenuLevel extends Level
         menuSprite.setSize(width, height);
         menuComponent.recalculateBtnPositions();
     }
+
+    @Override
+    public void dispose()
+    {
+        super.dispose();
+
+        menuComponent.dispose();
+    }
 }
