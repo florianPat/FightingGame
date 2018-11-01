@@ -1,4 +1,4 @@
-
+ 
 
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.utils.viewport.*;
@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class TestLevel extends Level
+public class TestLevel extends TileMapLevel
 {
     private final int playerCount = 2;
     private Function deadFlaggedFunction;
@@ -39,6 +39,8 @@ public class TestLevel extends Level
     @Override
     public void create()
     {
+        super.create();
+        
         for(int i = 0; i < playerCount; ++i)
         {
             createPlayer("player1", i);
@@ -58,29 +60,5 @@ public class TestLevel extends Level
         };
 
         eventManager.addListener(DeadEventData.eventId, Utils.getDelegateFromFunction(deadFlaggedFunction));
-    }
-
-    @Override
-    public void render(float dt)
-    {
-        gom.updateActors(dt);
-        eventManager.removeListeners();
-
-        physics.update(dt);
-
-        Gdx.gl.glClearColor( 0, 0, 0, 1 );
-        Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
-
-        // viewport.apply();
-        // spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-
-        spriteBatch.begin();
-        map.draw(spriteBatch);
-        gom.drawActors();
-        spriteBatch.end();
-
-        physics.debugRenderBodies(viewport);
-
-        onScreenControls.render();
     }
 }

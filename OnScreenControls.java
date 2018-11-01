@@ -204,8 +204,9 @@ public class OnScreenControls extends InputAdapter
 
     public void render()
     {
-        // viewport.apply();
-        // renderer.setProjectionMatrix(viewport.getCamera().combined);
+        viewport.apply();
+        renderer.setProjectionMatrix(viewport.getCamera().combined);
+
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.circle(moveLeftCenter.x, moveLeftCenter.y, BUTTON_RADIUS);
         renderer.circle(moveRightCenter.x, moveRightCenter.y, BUTTON_RADIUS);

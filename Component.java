@@ -1,13 +1,5 @@
  
 
-
-/**
- * Write a description of class Component here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
-
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

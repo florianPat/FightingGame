@@ -118,7 +118,7 @@ public class Physics
     {
         if(!bodies.isEmpty())
         {
-            // shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+            shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
             for (Iterator<Body> iterator = bodies.values().iterator(); iterator.hasNext();)

@@ -1,3 +1,4 @@
+ 
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -173,6 +174,7 @@ public class PlayerComponent extends AnimationComponent {
             lockMotion = true;
             getHit = true;
             sprite.setColor(hitColor);
+            jumpState = JumpState.FALLING;
         }
     }
 
@@ -212,8 +214,6 @@ public class PlayerComponent extends AnimationComponent {
         //NOTE: If we do not want that you can walk if you hit, delete the && smashState == JumpS...
         if((!lockMotion) && smashState == JumpState.NONE)
         {
-            //NOTE: For split screen mutiplayer comment out this section in every input if
-            /*                                                */
             if(playerId == 0 ? inputSystem.isMoveLeftPressed() : Gdx.input.isKeyPressed(input[0]))
             {
                 body.vel.x = -speed;
@@ -224,7 +224,6 @@ public class PlayerComponent extends AnimationComponent {
                     current = animation.get("left-walk").getKeyFrame(stateTime, true);
                 }
                 walkState = WalkState.LEFT;
-                offset.x = 0.0f;
             }
             if(playerId == 0 ? inputSystem.isMoveRightPressed() : Gdx.input.isKeyPressed(input[2]))
             {
@@ -236,7 +235,6 @@ public class PlayerComponent extends AnimationComponent {
                     current = animation.get("right-walk").getKeyFrame(stateTime, true);
                 }
                 walkState = WalkState.RIGHT;
-                offset.x = 16.0f;
             }
 
             if(playerId == 0 ? inputSystem.isJumpPressed() : Gdx.input.isKeyPressed(input[1]))
@@ -297,14 +295,10 @@ public class PlayerComponent extends AnimationComponent {
 
         //set frame
         Vector2 newPos = body.pos.add(body.vel.scl(dt));
+        offset.x = walkState == WalkState.LEFT ? 0.0f : 16.0f;
         offset.y = yOffset;
 
-        if(newPos.x < 0.0f || newPos.x >= worldWidth || newPos.y < 0.0f || newPos.y >= worldHeight)
-        {
-            eventManager.TriggerEvent(new DeadEventData(playerId));
-        }
-
-        if(current == null || false)
+        if(current == null)
         {
             switch (walkState)
             {
@@ -312,14 +306,12 @@ public class PlayerComponent extends AnimationComponent {
                 {
                     assert(animation.containsKey("left-walk"));
                     current = animation.get("left-walk").getKeyFrame(0.0f);
-                    offset.x = 0.0f;
                     break;
                 }
                 case RIGHT:
                 {
                     assert(animation.containsKey("right-walk"));
                     current = animation.get("right-walk").getKeyFrame(0.0f);
-                    offset.x = 16.0f;
                     break;
                 }
                 default:
@@ -327,6 +319,11 @@ public class PlayerComponent extends AnimationComponent {
                     Utils.invalidCodePath();
                 }
             }
+        }
+
+        if(newPos.x < -current.getWidth() || newPos.x >= worldWidth || newPos.y < -current.getHeight() || newPos.y >= worldHeight)
+        {
+            eventManager.TriggerEvent(new DeadEventData(playerId));
         }
 
         sprite.setTexture(current);
