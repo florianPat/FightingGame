@@ -58,8 +58,6 @@ public class OnScreenControls extends InputAdapter
         input = new InputSystem();
         viewport = new ExtendViewport(VIEWPORT_SIZE, VIEWPORT_SIZE);
         renderer = new ShapeRenderer();
-
-        recalculateButtonPositions();
     }
 
     @Override

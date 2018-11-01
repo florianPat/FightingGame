@@ -55,6 +55,8 @@ public class MenuLevel extends Level
         }
 
         menuSprite.setSize(worldSize.x, worldSize.y);
+
+        Gdx.input.setInputProcessor(menuComponent);
     }
 
     @Override

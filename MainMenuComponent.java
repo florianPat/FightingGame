@@ -21,21 +21,26 @@ class MainMenuComponent extends MenuComponent
     {
         super(viewport, worldSize, imgSize, screenManager);
 
-        final float btnWidth = 200.0f;
-        final float btnHeight = 15.0f;
+        resetBtns();
+    }
+
+    public void resetBtns()
+    {
+        final float btnWidth = 125.0f;
+        final float btnHeight = 12.0f;
         final float btnX = 80.0f;
 
-        btns[0] = new Rectangle(btnX, 70.0f, btnWidth, btnHeight);
-        btns[1] = new Rectangle(btnX, btns[0].y + btnHeight, btnWidth, btnHeight);
-        btns[2] = new Rectangle(btnX, btns[1].y + btnHeight, btnWidth, btnHeight);
-        btns[3] = new Rectangle(btnX, btns[2].y + btnHeight, btnWidth, btnHeight);
-
-        recalculateBtnPositions();
+        btns[0] = new Rectangle(btnX, 85.0f, btnWidth, btnHeight);
+        btns[1] = new Rectangle(btnX, btns[0].y - btnHeight, btnWidth, btnHeight);
+        btns[2] = new Rectangle(btnX, btns[1].y - btnHeight, btnWidth, btnHeight);
+        btns[3] = new Rectangle(btnX, btns[2].y - btnHeight, btnWidth, btnHeight);
     }
 
     @Override
     public void recalculateBtnPositions()
     {
+        resetBtns();
+
         float scaleX = worldSize.x / imgSize.x;
         float scaleY = worldSize.y / imgSize.y;
 
@@ -63,6 +68,7 @@ class MainMenuComponent extends MenuComponent
         renderer.setProjectionMatrix(viewport.getCamera().combined);
 
         renderer.begin(ShapeRenderer.ShapeType.Line);
+
         for(Rectangle btn : btns)
         {
             renderer.rect(btn.getX(), btn.getY(), btn.getWidth(), btn.getHeight());
@@ -78,6 +84,7 @@ class MainMenuComponent extends MenuComponent
         if(btns[0].contains(viewportPosition))
         {
             screenManager.setScreen(new TestLevel(screenManager, worldSize));
+            Utils.log("GoTo play!");
         }
         else if(btns[1].contains(viewportPosition))
         {
