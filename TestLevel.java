@@ -1,18 +1,5 @@
- 
 
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.utils.viewport.*;
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.Input.Keys;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class TestLevel extends TileMapLevel
 {
@@ -33,14 +20,15 @@ public class TestLevel extends TileMapLevel
         }
         Actor actor = gom.addActor();
         actor.addComponent(new PlayerComponent(eventManager, assetManager, spriteBatch, physics,
-                actor, textureAtlas, n, worldSize.x, worldSize.y, onScreenControls.input));
+                actor, textureAtlas, n, worldSize.x, worldSize.y, onScreenControls.input, camera,
+                map.getWidth(), map.getHeight()));
     }
 
     @Override
     public void create()
     {
         super.create();
-        
+
         for(int i = 0; i < playerCount; ++i)
         {
             createPlayer("player1", i);
@@ -49,7 +37,7 @@ public class TestLevel extends TileMapLevel
         deadFlaggedFunction = new Function() {
             @Override
             public void Event(EventData eventData) {
-                assert(eventData instanceof DeadEventData);
+                Utils.aassert(eventData instanceof DeadEventData);
                 DeadEventData event = (DeadEventData) eventData;
 
                 int playerId = event.getPlayerId();

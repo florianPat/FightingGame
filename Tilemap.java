@@ -1,26 +1,16 @@
- 
 
-import java.io.*;
-import java.util.ArrayList;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Tilemap {
 
@@ -70,6 +60,9 @@ public class Tilemap {
         }
     }
 
+    //NOTE: Change if tile size is not quadratic!
+    private final int TILE_SIZE = 32;
+
     private Tile[][] karte;
     private int width, height;
     private Body body = new Body(new Vector2(0.0f, 0.0f), "Ground", new Collider(new Circle(0.0f, 0.0f, 1.0f)), new ArrayList<String>(), false, true);
@@ -81,7 +74,8 @@ public class Tilemap {
     private Texture water;
     private Physics physics;
 
-    public Tilemap(String filename, AssetManager assetManager, Physics physics)
+    public Tilemap(String filename, AssetManager assetManager, Physics physics, GameStart screenManager,
+                   Vector2 worldSize)
     {
         this.physics = physics;
 
@@ -93,27 +87,38 @@ public class Tilemap {
 
         assetManager.finishLoading();
 
+        gras = assetManager.get("tileset/gras.jpg");
+        dirt = assetManager.get("tileset/dirt.jpg");
+        stone = assetManager.get("tileset/stone.jpg");
+        lava = assetManager.get("tileset/lava.jpg");
+        water = assetManager.get("tileset/water.jpg");
+
         try
         {
-            gras = assetManager.get("tileset/gras.jpg");
-            dirt = assetManager.get("tileset/dirt.jpg");
-            stone = assetManager.get("tileset/stone.jpg");
-            lava = assetManager.get("tileset/lava.jpg");
-            water = assetManager.get("tileset/water.jpg");
-
             ladeKarte(filename);
         }
         catch(IOException e)
         {
-            Utils.logBreak("Failed to init map!");
-            erstelleKarte();
+            Utils.log("Failed to init map!");
+            Utils.invalidCodePath();
+            //erstelleKarte();
         }
+    }
+
+    public int getWidth()
+    {
+        return width * TILE_SIZE;
+    }
+
+    public int getHeight()
+    {
+        return height * TILE_SIZE;
     }
 
     private void ladeKarte(String dateiname) throws IOException
     {
         FileHandle file = Gdx.files.internal(dateiname);
-        assert (file.exists());
+        Utils.aassert (file.exists());
         BufferedReader br = file.reader((int) file.length());
 
         String zeile = br.readLine();
@@ -129,23 +134,23 @@ public class Tilemap {
             {
                 if(zeile.charAt(j) == '0')
                 {
-                    karte[i][j] = new Tile(gras, true, new Vector2(j*32, i*32), body);
+                    karte[i][j] = new Tile(gras, true, new Vector2(j*TILE_SIZE, i*TILE_SIZE), body);
                 }
                 else if(zeile.charAt(j) == '1')
                 {
-                    karte[i][j] = new Tile(dirt, true, new Vector2(j*32, i*32), body);
+                    karte[i][j] = new Tile(dirt, true, new Vector2(j*TILE_SIZE, i*TILE_SIZE), body);
                 }
                 else if(zeile.charAt(j) == '2')
                 {
-                    karte[i][j] = new Tile(stone, true, new Vector2(j*32, i*32), body);
+                    karte[i][j] = new Tile(stone, true, new Vector2(j*TILE_SIZE, i*TILE_SIZE), body);
                 }
                 else if(zeile.charAt(j) == '3')
                 {
-                    karte[i][j] = new Tile(lava, false, new Vector2(j*32, i*32), body);
+                    karte[i][j] = new Tile(lava, false, new Vector2(j*TILE_SIZE, i*TILE_SIZE), body);
                 }
                 else if(zeile.charAt(j) == '4')
                 {
-                    karte[i][j] = new Tile(water, false, new Vector2(j*32, i*32), body);
+                    karte[i][j] = new Tile(water, false, new Vector2(j*TILE_SIZE, i*TILE_SIZE), body);
                 }
                 else
                 {
@@ -174,15 +179,15 @@ public class Tilemap {
 
                 if(zufall < 3)
                 {
-                    karte[i][j] = new Tile(water, false, new Vector2(j*32, i*32), body);
+                    karte[i][j] = new Tile(water, false, new Vector2(j*TILE_SIZE, i*TILE_SIZE), body);
                 }
                 else if(zufall == 3)
                 {
-                    karte[i][j] = new Tile(dirt, true, new Vector2(j*32, i*32), body);
+                    karte[i][j] = new Tile(dirt, true, new Vector2(j*TILE_SIZE, i*TILE_SIZE), body);
                 }
                 else if(zufall == 4)
                 {
-                    karte[i][j] = new Tile(stone, true, new Vector2(j*32, i*32), body);
+                    karte[i][j] = new Tile(stone, true, new Vector2(j*TILE_SIZE, i*TILE_SIZE), body);
                 }
                 else
                 {
@@ -200,9 +205,9 @@ public class Tilemap {
             for (int j = 0;j < width; j++)
             {
                 Tile tile = karte[i][j];
-                assert(tile != null);
-                assert(tile.getTexture() != null);
-                spriteBatch.draw(tile.getTexture(), j*32, i*32);
+                Utils.aassert(tile != null);
+                Utils.aassert(tile.getTexture() != null);
+                spriteBatch.draw(tile.getTexture(), j*TILE_SIZE, i*TILE_SIZE);
             }
         }
     }

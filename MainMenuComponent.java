@@ -1,11 +1,8 @@
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.math.Rectangle;
 
 class MainMenuComponent extends MenuComponent
 {
@@ -20,8 +17,6 @@ class MainMenuComponent extends MenuComponent
                              GameStart screenManager)
     {
         super(viewport, worldSize, imgSize, screenManager);
-
-        resetBtns();
     }
 
     public void resetBtns()
@@ -84,7 +79,6 @@ class MainMenuComponent extends MenuComponent
         if(btns[0].contains(viewportPosition))
         {
             screenManager.setScreen(new TestLevel(screenManager, worldSize));
-            Utils.log("GoTo play!");
         }
         else if(btns[1].contains(viewportPosition))
         {
@@ -96,7 +90,8 @@ class MainMenuComponent extends MenuComponent
         }
         else if(btns[3].contains(viewportPosition))
         {
-            Utils.log("Currently not implemented! (credtis)");
+            screenManager.setScreen(new MenuLevel("menu/Mitwirkende.jpg", screenManager,
+                    worldSize, MenuLevel.LevelComponentName.CreditsMenu));
         }
 
         return super.touchUp(screenX, screenY, pointer, button);

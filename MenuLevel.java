@@ -1,18 +1,16 @@
 
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.maps.tiled.*;
-import com.badlogic.gdx.assets.*;
-import com.badlogic.gdx.assets.loaders.resolvers.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 public class MenuLevel extends Level
 {
     public enum LevelComponentName
     {
-        MainMenu
+        MainMenu,
+        CreditsMenu
     }
 
     private Texture menuTex;
@@ -48,13 +46,17 @@ public class MenuLevel extends Level
                         new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
                 break;
             }
+            case CreditsMenu:
+            {
+                menuComponent = new CreditsMenuComponent(viewport, worldSize,
+                        new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
+                break;
+            }
             default:
             {
                 Utils.invalidCodePath();
             }
         }
-
-        menuSprite.setSize(worldSize.x, worldSize.y);
 
         Gdx.input.setInputProcessor(menuComponent);
     }
@@ -81,7 +83,8 @@ public class MenuLevel extends Level
     public void resize(int width, int height)
     {
         super.resize(width, height);
-        menuSprite.setSize(width, height);
+
+        menuSprite.setSize(worldSize.x, worldSize.y);
         menuComponent.recalculateBtnPositions();
     }
 
@@ -90,6 +93,7 @@ public class MenuLevel extends Level
     {
         super.dispose();
 
+        menuTex.dispose();
         menuComponent.dispose();
     }
 }

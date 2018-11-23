@@ -1,21 +1,17 @@
- 
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import com.badlogic.gdx.graphics.Color;
 
 public class PlayerComponent extends AnimationComponent {
 
@@ -75,8 +71,20 @@ public class PlayerComponent extends AnimationComponent {
 
     private OnScreenControls.InputSystem inputSystem;
 
+    private final float MIN_CAMERA_ZOOM = 0.35f;
+    private final float MAX_CAMERA_ZOOM = 0.65f;
+
+    private OrthographicCamera camera;
+    private float camZoom = MIN_CAMERA_ZOOM;
+    private float newCamZoom = MIN_CAMERA_ZOOM;
+    private float currentProgress = 0.0f;
+
+    private int tilemapWidth;
+    private int tilemapHeight;
+
     public PlayerComponent(EventManager eventManager, AssetManager assetManager, SpriteBatch spriteBatch, Physics physics, Actor owner, String[] textureAtlas,
-                           int n, float worldWidthIn, float worldHeightIn, OnScreenControls.InputSystem inputSystemIn) {
+                           int n, float worldWidthIn, float worldHeightIn, OnScreenControls.InputSystem inputSystemIn,
+                           OrthographicCamera cameraIn, int tilemapWidthIn, int tilemapHeightIn) {
         super(eventManager, assetManager, spriteBatch, physics, owner, textureAtlas);
 
         playerId = n;
@@ -84,8 +92,14 @@ public class PlayerComponent extends AnimationComponent {
         worldWidth = worldWidthIn;
         worldHeight = worldHeightIn;
 
+        tilemapWidth = tilemapWidthIn;
+        tilemapHeight = tilemapHeightIn;
+
         inputSystem = inputSystemIn;
 
+        camera = cameraIn;
+
+        // 8 or 3
         textureSmash = assetManager.get(textureAtlas[8]);
 
         //create body
@@ -109,7 +123,7 @@ public class PlayerComponent extends AnimationComponent {
         offset = new Vector2(0.0f, yOffset);
         hittingVec = new Vector2(1.0f, 0.0f);
 
-        assert(animation.containsKey("right-walk"));
+        Utils.aassert(animation.containsKey("right-walk"));
         current = animation.get("right-walk").getKeyFrame(0.0f);
         sprite = new Sprite(current);
 
@@ -131,7 +145,7 @@ public class PlayerComponent extends AnimationComponent {
         smashFunction = new Function() {
             @Override
             public void Event(EventData eventData) {
-                assert(eventData instanceof SmashEventData);
+                Utils.aassert(eventData instanceof SmashEventData);
                 SmashEventData event = (SmashEventData) eventData;
 
                 int playerId = event.getPlayerId();
@@ -180,6 +194,7 @@ public class PlayerComponent extends AnimationComponent {
 
     @Override
     public void update(float dt) {
+        currentProgress += 0.05f * dt;
 
         //move
         body.vel.x = 0.0f;
@@ -220,7 +235,7 @@ public class PlayerComponent extends AnimationComponent {
                 hittingVec.x = -1.0f;
                 if(jumpState == JumpState.NONE)
                 {
-                    assert(animation.containsKey("left-walk"));
+                    Utils.aassert(animation.containsKey("left-walk"));
                     current = animation.get("left-walk").getKeyFrame(stateTime, true);
                 }
                 walkState = WalkState.LEFT;
@@ -231,7 +246,7 @@ public class PlayerComponent extends AnimationComponent {
                 hittingVec.x = 1.0f;
                 if(jumpState == JumpState.NONE)
                 {
-                    assert (animation.containsKey("right-walk"));
+                    Utils.aassert (animation.containsKey("right-walk"));
                     current = animation.get("right-walk").getKeyFrame(stateTime, true);
                 }
                 walkState = WalkState.RIGHT;
@@ -250,7 +265,7 @@ public class PlayerComponent extends AnimationComponent {
                 jumpTimer += dt;
                 body.vel.y = speed;
                 hittingVec.y = 1.0f;
-                if(jumpTimer >= maxJumpTime)
+                if(jumpTimer >= maxJumpTime || body.triggerInformation.triggerBodyPart == Physics.TriggerBodyPart.HEAD)
                 {
                     jumpTimer = 0.0f;
                     jumpState = JumpState.FALLING;
@@ -268,8 +283,9 @@ public class PlayerComponent extends AnimationComponent {
 
             //fighting
             if(playerId == 0 ? inputSystem.isHitPressed() : Gdx.input.isKeyJustPressed(input[3])
-                && smashState == JumpState.NONE)
+                    && smashState == JumpState.NONE)
             {
+                textureSmash = walkState == WalkState.RIGHT ? animation.get("right-walk").getKeyFrame(0.0f, true) : animation.get("left-walk").getKeyFrame(0.0f, true);
                 current = textureSmash;
                 bodySmash.setIsActive(true);
                 smashState = JumpState.JUMPING;
@@ -304,13 +320,13 @@ public class PlayerComponent extends AnimationComponent {
             {
                 case LEFT:
                 {
-                    assert(animation.containsKey("left-walk"));
+                    Utils.aassert(animation.containsKey("left-walk"));
                     current = animation.get("left-walk").getKeyFrame(0.0f);
                     break;
                 }
                 case RIGHT:
                 {
-                    assert(animation.containsKey("right-walk"));
+                    Utils.aassert(animation.containsKey("right-walk"));
                     current = animation.get("right-walk").getKeyFrame(0.0f);
                     break;
                 }
@@ -329,7 +345,7 @@ public class PlayerComponent extends AnimationComponent {
         sprite.setTexture(current);
 
         //apply updated body to physics
-        physics.applySpriteToBoundingBox(current, collider, newPos);
+        Physics.applySpriteToBoundingBox(current, collider, newPos);
         collider.updateRectCollider();
 
         offset.add(newPos);
@@ -343,5 +359,78 @@ public class PlayerComponent extends AnimationComponent {
     public void draw() {
         sprite.setPosition(body.pos.x, body.pos.y);
         sprite.draw(spriteBatch);
+
+        if(playerId == 0)
+        {
+            camera.position.x = body.pos.x;
+            camera.position.y = body.pos.y;
+        }
+        else if(playerId == 1)
+        {
+            Vector2 newCamPos = new Vector2((body.pos.x + camera.position.x) / 2.0f,
+                    (body.pos.y + camera.position.y) / 2.0f);
+
+            boolean farAway = false;
+
+            float length = body.pos.x - camera.position.x;
+            if(Math.abs(length) >= 200.0f)
+            {
+                farAway = true;
+            }
+            else
+            {
+                length = body.pos.y - camera.position.y;
+                if(Math.abs(length) >= 100.0f)
+                {
+                    farAway = true;
+                }
+            }
+
+            if(farAway && newCamZoom != MAX_CAMERA_ZOOM)
+            {
+                newCamZoom = MAX_CAMERA_ZOOM;
+                currentProgress = 0.0f;
+                Utils.log("newCamZoom = 0.5f");
+            }
+            else if(!farAway && newCamZoom != MIN_CAMERA_ZOOM)
+            {
+                newCamZoom = MIN_CAMERA_ZOOM;
+                currentProgress = 0.0f;
+                Utils.log("newCamZoom = 0.25f");
+            }
+            if(newCamZoom != camZoom)
+            {
+                camZoom = MathUtils.lerp(camZoom, newCamZoom, currentProgress);
+            }
+            camera.zoom = camZoom;
+            camera.position.x = newCamPos.x;
+            camera.position.y = newCamPos.y;
+
+            float minX = worldWidth * camZoom / 2.0f;
+            float minY = worldHeight * camZoom / 2.0f;
+            if(camera.position.x < minX)
+            {
+                camera.position.x = minX;
+            }
+            else if(camera.position.x > (tilemapWidth - minX))
+            {
+                camera.position.x = tilemapWidth - minX;
+            }
+
+            if(camera.position.y < minY)
+            {
+                camera.position.y = minY;
+            }
+            else if(camera.position.y > (tilemapHeight - minY))
+            {
+                camera.position.y = tilemapHeight - minY;
+            }
+
+            camera.update();
+        }
+        else
+        {
+            Utils.invalidCodePath();
+        }
     }
 }

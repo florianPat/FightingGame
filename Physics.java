@@ -1,15 +1,15 @@
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Physics
 {
@@ -22,7 +22,7 @@ public class Physics
         RIGHT
     };
 
-    public final float gravity = -98.1f;
+    public final float gravity = -152.2f;
     private HashMap<String, Body> bodies;
     private ShapeRenderer shapeRenderer;
 
@@ -86,7 +86,7 @@ public class Physics
                 for (String collisionIdIt : it.physicsElments.get(0).collisionIds)
                 {
                     Body collideElementIt = bodies.get(collisionIdIt);
-                    assert(collideElementIt != null);
+                    Utils.aassert(collideElementIt != null);
                     if (collideElementIt.getIsActive())
                     {
                         Body collideElementBody = collideElementIt;
@@ -165,7 +165,7 @@ public class Physics
     {
         if(bodies.containsKey(body.id))
         {
-            assert(body.isStatic);
+            Utils.aassert(body.isStatic);
 
             if(bodies.containsValue(body))
             {
@@ -180,7 +180,7 @@ public class Physics
         else
         {
             Body pref = bodies.put(body.id, body);
-            assert(pref == null);
+            Utils.aassert(pref == null);
         }
     }
 
@@ -191,7 +191,7 @@ public class Physics
 
     public static void applySpriteToBoundingBox(Sprite sprite, Collider boundingBox)
     {
-        assert (boundingBox.getType() == Collider.Type.rect);
+        Utils.aassert (boundingBox.getType() == Collider.Type.rect);
 
         boundingBox.unionCollider.rect.x = sprite.getX();
         boundingBox.unionCollider.rect.y = sprite.getY();
@@ -201,7 +201,7 @@ public class Physics
 
     public static void applySpriteToBoundingBox(Texture texture, Collider boundingBox, Vector2 pos)
     {
-        assert (boundingBox.getType() == Collider.Type.rect);
+        Utils.aassert (boundingBox.getType() == Collider.Type.rect);
 
         boundingBox.unionCollider.rect.x = pos.x;
         boundingBox.unionCollider.rect.y = pos.y;
