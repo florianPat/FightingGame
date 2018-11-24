@@ -74,6 +74,10 @@ public class Tilemap {
     private Texture water;
     private Physics physics;
 
+    /**
+    Erstellt eine Tilemap von einer Textdatei.
+    @param filename Der Textdateiname der Tilemap, welche eingelesen wird und danach gerendert werden kann
+    */
     public Tilemap(String filename, AssetManager assetManager, Physics physics, GameStart screenManager,
                    Vector2 worldSize)
     {
@@ -198,6 +202,9 @@ public class Tilemap {
         physics.addElement(body);
     }
 
+    /**
+    Zeichnet die Tilemap
+    */
     public void draw(SpriteBatch spriteBatch)
     {
         for (int i = 0; i < height; i++)

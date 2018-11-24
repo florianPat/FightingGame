@@ -4,10 +4,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Main
 {
+    /**Diese Methode startet das ganze Spiel!
+    Der Vector2 worldSize gibt die virtuelle Breite und Hoehe des Spiels an.
+    Diese ändert sich aber durch das ExtendViewport, also immer die worldWidth und worldHeight des viewports nehmen!
+    */
     public static void main(String args[])
     {
         final Vector2 worldSize = new Vector2(900.0f, 600.0f);
-       // 853 : 480 for 16:9 aspect ratio. But we need a smart camera for that to work!
-       new LwjglApplication(new GameStart(worldSize), "Krasses Spiel", (int)worldSize.x, (int)worldSize.y);
+        new LwjglApplication(new GameStart(worldSize), "Krasses Spiel", (int)worldSize.x, (int)worldSize.y);
     }
 }

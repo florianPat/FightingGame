@@ -1,4 +1,3 @@
- 
 
 import java.util.HashMap;
 import java.util.*;
@@ -15,12 +14,19 @@ public class GameObjectManager
         destroyActorQueue = new ArrayList<Integer>();
     }
 
+    /**
+    Ein neues GameObjekt, einen neuen Actor hinzufügen
+    */
     public Actor addActor() {
         int id = Utils.getGUID();
         Actor actor = new Actor(id);
         actors.put(id, actor);
         return actor;
     }
+
+    /**
+    Entfernt ein GameObjekt/Actor aus dem System. Es ist sozusagen gelöscht!
+    */
     public void destroyActor(int actorId) {
         destroyActorQueue.add(actorId);
     }
@@ -44,6 +50,9 @@ public class GameObjectManager
 
     //public void sortActors();
 
+    /**
+    Liefert einen Actor aufgrund dessen Id
+    */
     public Actor getActor(int actorId)
     {
         return actors.get(actorId);
@@ -63,13 +72,15 @@ public class GameObjectManager
         }
     }
 
-    private int getActorId(long id)
-    {
-        return (int)(id >> 32l);
-    }
+    //Für sorting. Habe das hier aber nicht implementiert. Für eine Bespielimplementation siehe: https://github.com/florianPat/ZeldaLike (Warnung: Code in C++!)
+    //Siehe auch Actor.java!
+    // private int getActorId(long id)
+    // {
+    //     return (int)(id >> 32l);
+    // }
 
-    private int getComponentId(long id)
-    {
-        return (int)(id & 0xffffffffl);
-    }
+    // private int getComponentId(long id)
+    // {
+    //     return (int)(id & 0xffffffffl);
+    // }
 }

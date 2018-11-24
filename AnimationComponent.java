@@ -1,4 +1,3 @@
- 
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -29,6 +28,7 @@ public class AnimationComponent extends Component {
 
     protected Texture current;
 
+    //Lädt aus einem Array von Texture-Dateinamen verschieden Animationen
     public AnimationComponent(EventManager eventManager, AssetManager assetManager, SpriteBatch spriteBatch, Physics physics, Actor owner, String[] textureAtlas) {
         super(ID, eventManager, assetManager, spriteBatch, physics, owner);
 

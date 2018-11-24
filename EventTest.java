@@ -1,4 +1,3 @@
- 
 
 public class EventTest extends EventData {
 

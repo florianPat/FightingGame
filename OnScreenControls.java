@@ -58,8 +58,14 @@ public class OnScreenControls extends InputAdapter
         }
     }
 
+    /**
+    Feld sollte genutzt werden, um sich über die Eingabe zu informieren
+    */
     public InputSystem input;
 
+    /**
+    Erstellt einen neuen OnScreenController! Muss noch mit Gdx.input.setInputProcessor() "registriert" werden
+    */
     public OnScreenControls(AssetManager assetManager)
     {
         input = new InputSystem();
@@ -230,6 +236,9 @@ public class OnScreenControls extends InputAdapter
         return super.touchDragged(screenX, screenY, pointer);
     }
 
+    /**
+    Rendert den Controller
+    */
     public void render()
     {
         viewport.apply();
@@ -247,6 +256,9 @@ public class OnScreenControls extends InputAdapter
         renderer.end();
     }
 
+    /**
+    Berechnet die Postionen der Knöpfe aufgrund der Größe des Fensters
+    */
     public void recalculateButtonPositions()
     {
         float yPos = viewport.getWorldHeight() * 1 / 6;
@@ -262,6 +274,9 @@ public class OnScreenControls extends InputAdapter
         sprites[2].setCenter(jumpCenter.x, jumpCenter.y);
     }
 
+    /**
+    Disposed den OnScreenController
+    */
     public void dispose()
     {
         renderer.dispose();

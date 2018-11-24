@@ -1,4 +1,3 @@
- 
 
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,7 +21,14 @@ public abstract class Component
         this.owner = owner;
     }
 
+    /**
+    Methode überschreiben, um z.B. die position zu updaten
+    */
     public abstract void update(float dt);
+
+    /**
+    Methode überschreiben, um das Objekt zu zeichnen.
+    */
     public abstract void draw();
     //public gomSort::SortKey sort() { return gomSort::SortKey{ 0, 0.0f }; }
     public int getId() { return id; }

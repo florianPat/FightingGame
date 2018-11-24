@@ -1,4 +1,3 @@
- 
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Circle;
@@ -26,6 +25,9 @@ public class Collider
 
     public UnionCollider unionCollider;
 
+    /**
+    Erstellt einen neuen Collider, welcher die Form eines Rechtecks hat
+    */
     public Collider(Rectangle rect)
     {
         type = Type.rect;
@@ -36,6 +38,9 @@ public class Collider
         updateRectCollider();
     }
 
+    /**
+    Erstellt einen neuen Collider, welcher die Form eines Kreises hat
+    */
     public Collider(Circle circle)
     {
         type = Type.circle;
@@ -46,17 +51,26 @@ public class Collider
         updateCircleCollider();
     }
 
+    /**
+    Liefert den Typ der Form zurück
+    */
     public Type getType()
     {
         return type;
     }
 
+    /**
+    Default-Konstruktor
+    */
     public Collider()
     {
         type = Type.rect;
         unionCollider = new UnionCollider();
     }
 
+    /**
+    Nachdem bei dem Rechteck, mit welchen der Collider erstellt wurde, etwas geändert wurde, muss diese Methode aufgerufen werden, um den Collider davon wissen zu lassen
+    */
     public void updateRectCollider()
     {
         assert(type == Type.rect);
@@ -78,6 +92,9 @@ public class Collider
         unionCollider.polygon.setVertices(vertices);
     }
 
+    /**
+    Siehe updateRectCollider, nur wenn das Objekt (der Typ), ein Kreis ist
+    */
     public void updateCircleCollider()
     {
         assert(type == Type.circle);
@@ -108,6 +125,9 @@ public class Collider
         unionCollider.polygon.setVertices(vertices);
     }
 
+    /**
+    Kollidieren die beiden Collider miteinander?
+    */
     public boolean intersects(Collider other)
     {
         if(other.type == Type.rect && type == Type.rect)
@@ -138,6 +158,9 @@ public class Collider
         return true;
     }
 
+    /**
+    Liefert den Vector2 zurück, um welchen dieser Collider translatet (Position verschieben) werden muss, damit die Collider nicht mehr kollidieren.
+    */
     public Vector2 collide(Collider other)
     {
         Vector2 minTransVec = null;

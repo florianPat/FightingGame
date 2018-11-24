@@ -11,13 +11,28 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 public abstract class Level implements Screen
 {
     protected OrthographicCamera camera;
+    /**
+    Benutzen, um die worldWidth / worldHeight zu bekommen
+    */
     protected ExtendViewport viewport;
+    /**
+    Rendern von Texturen und Sprites
+    */
     protected SpriteBatch spriteBatch;
     protected GameObjectManager gom;
     protected EventManager eventManager;
+    /**
+    Sollte in der überschriebenen Methode create benutzt werden, um z.B. Texturen zu laden
+    */
     protected AssetManager assetManager;
     protected Physics physics;
+    /**
+    Wie der Name schon vermuten lässt, werden hier die Level mit der Methode setScreen gewechselt (z.B. von einem Menü zum "richtigen" Spiel)
+    */
     protected GameStart screenManager;
+    /**
+    Siehe Erklärung unter Main!
+    */
     protected Vector2 worldSize;
 
     public Level(GameStart screenManager, Vector2 worldSize)
@@ -26,6 +41,9 @@ public abstract class Level implements Screen
         this.worldSize = worldSize;
     }
 
+    /**
+    Überschreiebn, um alle Felder der Klasse zu initialisieren. Man sollte es nicht im Konstruktor, sondern hier machen!
+    */
     public abstract void create();
 
     @Override
@@ -45,6 +63,9 @@ public abstract class Level implements Screen
         assetManager.finishLoading();
     }
 
+    /**
+    Das Level wird geupdated und gerendert
+    */
     @Override
     public void render(float dt)
     {
@@ -64,6 +85,9 @@ public abstract class Level implements Screen
         spriteBatch.end();
     }
 
+    /**
+    Alle Felder, welche eine dispose-Methode haben, sollten hier disposed werden (z.B. Textures...)
+    */
     @Override
     public void dispose()
     {
@@ -72,6 +96,10 @@ public abstract class Level implements Screen
         physics.dispose();
     }
 
+    /**
+    Wird aufgerufen, wenn das Level erstellt wird oder wenn das Fenster in der Größe verändert wird
+    Sollte überschrieben werden, wenn man z.B. Berechnungen mit der worldSize macht. Sollten hier neu berechnet werden
+    */
     @Override
     public void resize(int width, int height)
     {
@@ -81,16 +109,25 @@ public abstract class Level implements Screen
         worldSize.y = viewport.getWorldHeight();
     }
 
+    /**
+    Wird aufgerufen, wenn die App pausiert (siehe libGdx-Wiki!)
+    */
     @Override
     public void pause()
     {
     }
 
+    /**
+    Wird aufgerufen, wenn die App wieder in den Vordergrund tritt (siehe libGdx-Wiki!)
+    */
     @Override
     public void resume()
     {
     }
 
+    /**
+    Wird aufgerufen, wenn das Level zerstört wird
+    */
     @Override
     public void hide()
     {

@@ -1,4 +1,3 @@
- 
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +26,9 @@ public class EventManager
         eventDeleteMap = new ArrayList<Pair>();
     }
 
+    /**
+    Hinzufügen von einer Funktion, welche aufgerufen wird, wenn TriggerEvent mit der eventType aufgerufen wird
+    */
     public boolean addListener(int eventType, DelegateFunction delegateFunction)
     {
         ArrayList<DelegateFunction> eventListenerList = eventListenerMap.get(eventType);
@@ -50,11 +52,17 @@ public class EventManager
         return true;
     }
 
+    /**
+    Entfernt einen Listener
+    */
     public void removeListener(int eventType, DelegateFunction delegateFunction)
     {
         eventDeleteMap.add(new Pair(eventType, delegateFunction));
     }
 
+    /**
+    Die eventId des EventData ist der EventType. Alle Methoden, welche an diesen Type geadded wurden, werden mit dem eventData als Arguemnt aufgerufen
+    */
     public boolean TriggerEvent(EventData eventData)
     {
         boolean processed = false;

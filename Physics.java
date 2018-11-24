@@ -114,6 +114,9 @@ public class Physics
         }
     }
 
+    /**
+    Alle Kollider werden gezeichnet, um zu sehen, wo Sie in der Spielwelt wirklich sind
+    */
     public void debugRenderBodies(Viewport viewport)
     {
         if(!bodies.isEmpty())
@@ -156,11 +159,17 @@ public class Physics
         }
     }
 
+    /**
+    Disposed das Physik-System
+    */
     public void dispose()
     {
         shapeRenderer.dispose();
     }
 
+    /**
+    Fügt das Objekt dem System hinzu, damit es beim Kollisions-Check berücksichtigt wird
+    */
     void addElement(Body body)
     {
         if(bodies.containsKey(body.id))
@@ -184,11 +193,17 @@ public class Physics
         }
     }
 
+    /**
+    Entfernt ein Objekt aus dem System, wenn man es nicht mehr braucht (wenn z.B. ein Gegner "zerstört" ist und das Component gelöscht wird)
+    */
     boolean removeElementById(String id)
     {
         return (bodies.remove(id) != null);
     }
 
+    /**Wenn die vel gesetzt ist, ist es noch nicht getan. Die pos des Sprites und die Größe wird auf den Collider übertragen.
+    Die position des Sprites sollte vorher aufgrund der vel geupdated werden
+    */
     public static void applySpriteToBoundingBox(Sprite sprite, Collider boundingBox)
     {
         Utils.aassert (boundingBox.getType() == Collider.Type.rect);
@@ -199,6 +214,9 @@ public class Physics
         boundingBox.unionCollider.rect.height = sprite.getHeight();
     }
 
+    /**
+    Wie applySpriteToBoundingBox, bloß das die Position nicht die des Sprites, sondern der Vektor2 ist
+    */
     public static void applySpriteToBoundingBox(Texture texture, Collider boundingBox, Vector2 pos)
     {
         Utils.aassert (boundingBox.getType() == Collider.Type.rect);
@@ -209,6 +227,9 @@ public class Physics
         boundingBox.unionCollider.rect.height = texture.getHeight();
     }
 
+    /**
+    Liefert alle BodyId`s, welche den string enthalten
+    */
     ArrayList<String> getAllCollisionIdsWhichContain(String string)
     {
         ArrayList<String> result = new ArrayList<String>();
