@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-
 import java.util.ArrayList;
 
 public class PlayerComponent extends AnimationComponent {
@@ -33,11 +32,12 @@ public class PlayerComponent extends AnimationComponent {
     }
     private JumpState jumpState = JumpState.NONE;
     private float jumpTimer = 0.0f;
-    private float maxJumpTime = 1.0f;
+    private float maxJumpTime = 0.35f;
 
     private float smashTimer = 0.0f;
     private final float maxSmashTimer = 1.0f;
     private JumpState smashState = JumpState.NONE;
+    private short nJumps = 3;
 
     private Texture textureSmash;
     private Rectangle rectSmash;
@@ -194,6 +194,8 @@ public class PlayerComponent extends AnimationComponent {
 
     @Override
     public void update(float dt) {
+        Utils.aassert(nJumps >= 0);
+
         currentProgress += 0.05f * dt;
 
         //move
@@ -226,6 +228,20 @@ public class PlayerComponent extends AnimationComponent {
             }
         }
 
+        if(smashState == JumpState.JUMPING)
+        {
+            current = textureSmash;
+            // smashTimer += dt;
+            // if(smashTimer > maxSmashTimer)
+            // {
+            //     smashTimer = 0.0f;
+            //     smashState = JumpState.NONE;
+            //     bodySmash.setIsActive(false);
+            // }
+            bodySmash.setIsActive(false);
+            smashState = JumpState.NONE;
+        }
+
         //NOTE: If we do not want that you can walk if you hit, delete the && smashState == JumpS...
         if((!lockMotion) && smashState == JumpState.NONE)
         {
@@ -252,18 +268,36 @@ public class PlayerComponent extends AnimationComponent {
                 walkState = WalkState.RIGHT;
             }
 
-            if(playerId == 0 ? inputSystem.isJumpPressed() : Gdx.input.isKeyPressed(input[1]))
+            if(body.triggerInformation.triggerBodyPart == Physics.TriggerBodyPart.SHOES)
             {
-                if(jumpState == JumpState.NONE && body.triggerInformation.triggerBodyPart == Physics.TriggerBodyPart.SHOES)
+                nJumps = 3;
+            }
+
+            if(playerId == 0 ? inputSystem.isJumpPressed() : Gdx.input.isKeyJustPressed(input[1]))
+            {
+                if(nJumps > 0)
                 {
-                    jumpState = JumpState.JUMPING;
+                    if(jumpState == JumpState.JUMPING)
+                    {
+                        jumpTimer = 0.0f;
+                        --nJumps;
+                    }
+                    else if(jumpState == JumpState.NONE || jumpState == jumpState.FALLING)
+                    {
+                        jumpState = JumpState.JUMPING;
+                        --nJumps;
+                    }
+                    else
+                    {
+                        Utils.invalidCodePath();
+                    }
                 }
             }
 
             if(jumpState == JumpState.JUMPING)
             {
                 jumpTimer += dt;
-                body.vel.y = speed;
+                body.vel.y = speed * 3.5f * Math.abs(jumpTimer - 1.0f);
                 hittingVec.y = 1.0f;
                 if(jumpTimer >= maxJumpTime || body.triggerInformation.triggerBodyPart == Physics.TriggerBodyPart.HEAD)
                 {
@@ -289,18 +323,6 @@ public class PlayerComponent extends AnimationComponent {
                 current = textureSmash;
                 bodySmash.setIsActive(true);
                 smashState = JumpState.JUMPING;
-            }
-        }
-
-        if(smashState == JumpState.JUMPING)
-        {
-            current = textureSmash;
-            smashTimer += dt;
-            if(smashTimer > maxSmashTimer)
-            {
-                smashTimer = 0.0f;
-                smashState = JumpState.NONE;
-                bodySmash.setIsActive(false);
             }
         }
 
@@ -337,7 +359,7 @@ public class PlayerComponent extends AnimationComponent {
             }
         }
 
-        if(newPos.x < -current.getWidth() || newPos.x >= worldWidth || newPos.y < -current.getHeight() || newPos.y >= worldHeight)
+        if(newPos.y < -current.getHeight())
         {
             eventManager.TriggerEvent(new DeadEventData(playerId));
         }
@@ -346,10 +368,8 @@ public class PlayerComponent extends AnimationComponent {
 
         //apply updated body to physics
         Physics.applySpriteToBoundingBox(current, collider, newPos);
-        collider.updateRectCollider();
 
         offset.add(newPos);
-        bodySmash.pos = offset;
         rectSmash.x = offset.x;
         rectSmash.y = offset.y;
         colliderSmash.updateRectCollider();
@@ -390,13 +410,11 @@ public class PlayerComponent extends AnimationComponent {
             {
                 newCamZoom = MAX_CAMERA_ZOOM;
                 currentProgress = 0.0f;
-                Utils.log("newCamZoom = 0.5f");
             }
             else if(!farAway && newCamZoom != MIN_CAMERA_ZOOM)
             {
                 newCamZoom = MIN_CAMERA_ZOOM;
                 currentProgress = 0.0f;
-                Utils.log("newCamZoom = 0.25f");
             }
             if(newCamZoom != camZoom)
             {

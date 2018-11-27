@@ -1,4 +1,5 @@
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.assets.AssetManager;
@@ -96,62 +97,33 @@ public class OnScreenControls extends InputAdapter
         }
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        switch (keycode)
+    /**
+    Touch-Input wird automatisch gesetzt, Keyboard aber nicht, da dort nicht keyJustPressed "nachgeguckt" werden kann.
+    Deswegen muss für das Keyboard-Input-Update diese Methode aufgerufen werden.
+    */
+    public void keyInputUpdate()
+    {
+        input.hit = false;
+        input.jump = false;
+        input.moveLeft = false;
+        input.moveRight = false;
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
         {
-            case Input.Keys.DOWN:
-            {
-                input.hit = true;
-                break;
-            }
-            case Input.Keys.UP:
-            {
-                input.jump = true;
-                break;
-            }
-            case Input.Keys.LEFT:
-            {
-                input.moveLeft = true;
-                break;
-            }
-            case Input.Keys.RIGHT:
-            {
-                input.moveRight = true;
-                break;
-            }
+            input.hit = true;
         }
-
-        return super.keyDown(keycode);
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        switch (keycode)
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
         {
-            case Input.Keys.DOWN:
-            {
-                input.hit = false;
-                break;
-            }
-            case Input.Keys.UP:
-            {
-                input.jump = false;
-                break;
-            }
-            case Input.Keys.LEFT:
-            {
-                input.moveLeft = false;
-                break;
-            }
-            case Input.Keys.RIGHT:
-            {
-                input.moveRight = false;
-                break;
-            }
+            input.jump = true;
         }
-
-        return super.keyUp(keycode);
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        {
+            input.moveLeft = true;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        {
+            input.moveRight = true;
+        }
     }
 
     @Override

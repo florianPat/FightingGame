@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -77,35 +76,38 @@ public class Physics
         for (Iterator<Body> iterator = bodies.values().iterator(); iterator.hasNext();)
         {
             Body it = iterator.next();
-            if (it.isActive && (!it.isStatic))
+            if((!it.isStatic))
             {
                 it.triggered = false;
                 it.triggerInformation.triggerElementCollision = "";
                 it.triggerInformation.triggerBodyPart = TriggerBodyPart.NONE;
 
-                for (String collisionIdIt : it.physicsElments.get(0).collisionIds)
+                if (it.isActive)
                 {
-                    Body collideElementIt = bodies.get(collisionIdIt);
-                    Utils.aassert(collideElementIt != null);
-                    if (collideElementIt.getIsActive())
+                    for (String collisionIdIt : it.physicsElments.get(0).collisionIds)
                     {
-                        Body collideElementBody = collideElementIt;
-                        Body itBody = it;
-
-                        Collider bodyRect = itBody.physicsElments.get(0).collider;
-
-                        Collider elementRect = collideElementBody.physicsElments.get(0).collider;
-                        if (collideElementBody.isStatic)
+                        Body collideElementIt = bodies.get(collisionIdIt);
+                        Utils.aassert(collideElementIt != null);
+                        if (collideElementIt.getIsActive())
                         {
-                            for (PhysicsElement collideElementPhysicsElementIt : collideElementBody.physicsElments)
-                            {
-                                elementRect = collideElementPhysicsElementIt.collider;
+                            Body collideElementBody = collideElementIt;
+                            Body itBody = it;
 
-                                handleCollision(itBody, collideElementBody, bodyRect, elementRect);
+                            Collider bodyRect = itBody.physicsElments.get(0).collider;
+
+                            Collider elementRect = collideElementBody.physicsElments.get(0).collider;
+                            if (collideElementBody.isStatic)
+                            {
+                                for (PhysicsElement collideElementPhysicsElementIt : collideElementBody.physicsElments)
+                                {
+                                    elementRect = collideElementPhysicsElementIt.collider;
+
+                                    handleCollision(itBody, collideElementBody, bodyRect, elementRect);
+                                }
                             }
+                            else
+                                handleCollision(itBody, collideElementBody, bodyRect, elementRect);
                         }
-                        else
-                            handleCollision(itBody, collideElementBody, bodyRect, elementRect);
                     }
                 }
 
@@ -212,6 +214,8 @@ public class Physics
         boundingBox.unionCollider.rect.y = sprite.getY();
         boundingBox.unionCollider.rect.width = sprite.getWidth();
         boundingBox.unionCollider.rect.height = sprite.getHeight();
+
+        boundingBox.updateRectCollider();
     }
 
     /**
@@ -225,6 +229,8 @@ public class Physics
         boundingBox.unionCollider.rect.y = pos.y;
         boundingBox.unionCollider.rect.width = texture.getWidth();
         boundingBox.unionCollider.rect.height = texture.getHeight();
+
+        boundingBox.updateRectCollider();
     }
 
     /**
