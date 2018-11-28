@@ -27,8 +27,10 @@ public class TileMapLevel extends Level
     @Override
     public void render(float dt)
     {
-        //TODO: Do only if we are on Desktop!
-        onScreenControls.keyInputUpdate();
+        if(!onMobile())
+        {
+            onScreenControls.keyInputUpdate();
+        }
 
         gom.updateActors(dt);
         eventManager.removeListeners();

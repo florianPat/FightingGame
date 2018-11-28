@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.Application.ApplicationType;
 
 public abstract class Level implements Screen
 {
@@ -107,6 +108,14 @@ public abstract class Level implements Screen
 
         worldSize.x = viewport.getWorldWidth();
         worldSize.y = viewport.getWorldHeight();
+    }
+
+    /**
+    Returned ob das Spiel auf einem mobilen Gerät ausgeführt wird.
+    */
+    protected boolean onMobile()
+    {
+        return Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.iOS;
     }
 
     /**

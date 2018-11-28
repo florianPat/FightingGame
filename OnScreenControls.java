@@ -24,7 +24,6 @@ public class OnScreenControls extends InputAdapter
     private int moveRightPointer;
     private int jumpPointer;
     private int hitPointer;
-    private ShapeRenderer shapeRenderer;
     private SpriteBatch renderer;
 
     //TODO: Add "faust" btn!
@@ -72,24 +71,26 @@ public class OnScreenControls extends InputAdapter
         input = new InputSystem();
         viewport = new ExtendViewport(VIEWPORT_SIZE, VIEWPORT_SIZE);
 
-        shapeRenderer = new ShapeRenderer();
         renderer = new SpriteBatch();
 
-        textures = new Texture[3];
+        textures = new Texture[4];
 
         assetManager.load("menu/Pfeil_links.png", Texture.class);
         assetManager.load("menu/Pfeil_oben.png", Texture.class);
         assetManager.load("menu/Pfeil_rechts.png", Texture.class);
+        assetManager.load("menu/Faust.png", Texture.class);
         assetManager.finishLoading();
 
         textures[0] = assetManager.get("menu/Pfeil_links.png", Texture.class);
         textures[1] = assetManager.get("menu/Pfeil_rechts.png", Texture.class);
         textures[2] = assetManager.get("menu/Pfeil_oben.png", Texture.class);
+        textures[3] = assetManager.get("menu/Faust.png", Texture.class);
 
-        sprites = new Sprite[3];
+        sprites = new Sprite[4];
         sprites[0] = new Sprite(textures[0]);
         sprites[1] = new Sprite(textures[1]);
         sprites[2] = new Sprite(textures[2]);
+        sprites[3] = new Sprite(textures[3]);
 
         for(Sprite sprite : sprites)
         {
@@ -214,17 +215,13 @@ public class OnScreenControls extends InputAdapter
     public void render()
     {
         viewport.apply();
-        shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         renderer.setProjectionMatrix(viewport.getCamera().combined);
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.circle(hitCenter.x, hitCenter.y, BUTTON_RADIUS);
-        shapeRenderer.end();
 
         renderer.begin();
         sprites[0].draw(renderer);
         sprites[1].draw(renderer);
         sprites[2].draw(renderer);
+        sprites[3].draw(renderer);
         renderer.end();
     }
 
@@ -244,6 +241,7 @@ public class OnScreenControls extends InputAdapter
         sprites[0].setCenter(moveLeftCenter.x, moveLeftCenter.y);
         sprites[1].setCenter(moveRightCenter.x, moveRightCenter.y);
         sprites[2].setCenter(jumpCenter.x, jumpCenter.y);
+        sprites[3].setCenter(hitCenter.x, hitCenter.y);
     }
 
     /**
