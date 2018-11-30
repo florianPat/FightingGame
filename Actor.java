@@ -53,6 +53,13 @@ public class Actor
         components.remove(componentId);
     }
 
+    public Component getComponent(int componentId)
+    {
+        Utils.aassert(components.containsKey(componentId));
+
+        return components.get(componentId);
+    }
+
     /**
     Liefert die Id des Actors, welche diesen identifiziert
     */
