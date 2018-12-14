@@ -16,8 +16,7 @@ class CreditsMenuComponent extends MenuComponent
 
     public void resetBtns()
     {
-        //TODO: !!
-        backBtn = new Rectangle(5.0f, 85.0f, 50.0f, 60.0f);
+        backBtn = new Rectangle(0.0f, 0.0f, 40.0f, 15.0f);
     }
 
     @Override

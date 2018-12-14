@@ -4,11 +4,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-class MainMenuComponent extends MenuComponent
+class MenuBtnsBackComponent extends MenuComponent
 {
-    private Rectangle btns[] = new Rectangle[4];
+    protected Rectangle btns[];
+    protected Rectangle backBtn;
 
-    public MainMenuComponent(ExtendViewport viewport, Vector2 worldSize, Vector2 imgSize,
+    public MenuBtnsBackComponent(ExtendViewport viewport, Vector2 worldSize, Vector2 imgSize,
                              GameStart screenManager)
     {
         super(viewport, worldSize, imgSize, screenManager);
@@ -16,14 +17,7 @@ class MainMenuComponent extends MenuComponent
 
     public void resetBtns()
     {
-        final float btnWidth = 125.0f;
-        final float btnHeight = 12.0f;
-        final float btnX = 80.0f;
-
-        btns[0] = new Rectangle(btnX, 85.0f, btnWidth, btnHeight);
-        btns[1] = new Rectangle(btnX, btns[0].y - btnHeight, btnWidth, btnHeight);
-        btns[2] = new Rectangle(btnX, btns[1].y - btnHeight, btnWidth, btnHeight);
-        btns[3] = new Rectangle(btnX, btns[2].y - btnHeight, btnWidth, btnHeight);
+        backBtn = new Rectangle(0.0f, 0.0f, 40.0f, 15.0f);
     }
 
     @Override
@@ -50,6 +44,20 @@ class MainMenuComponent extends MenuComponent
 
             btn.setPosition(localSpacePos);
         }
+
+        Vector2 origin = new Vector2(backBtn.getX() + (backBtn.getWidth() / 2.0f),
+                backBtn.getY() + (backBtn.getHeight() / 2.0f));
+
+        Vector2 localSpacePos = new Vector2(-(origin.x - backBtn.getX()), -(origin.y - backBtn.getY()));
+
+        backBtn.setWidth(backBtn.getWidth() * scaleX);
+        backBtn.setHeight(backBtn.getHeight() * scaleY);
+
+        localSpacePos.scl(scaleX, scaleY);
+        origin.scl(scaleX, scaleY);
+        localSpacePos.add(origin);
+
+        backBtn.setPosition(localSpacePos);
     }
 
     @Override
@@ -71,25 +79,10 @@ class MainMenuComponent extends MenuComponent
     {
         Vector2 viewportPosition = viewport.unproject(new Vector2(screenX, screenY));
 
-        if(btns[0].contains(viewportPosition))
+        if(backBtn.contains(viewportPosition))
         {
-            screenManager.setScreen(new MenuLevel("menu/Spielen.jpg", screenManager,
-                    worldSize, MenuLevel.LevelComponentName.PlayMenu));
-        }
-        else if(btns[1].contains(viewportPosition))
-        {
-            screenManager.setScreen(new MenuLevel("menu/PartyModus.jpg", screenManager,
-                    worldSize, MenuLevel.LevelComponentName.PartyMenu));
-        }
-        else if(btns[2].contains(viewportPosition))
-        {
-            screenManager.setScreen(new MenuLevel("menu/Einstellungen.png", screenManager,
-                    worldSize, MenuLevel.LevelComponentName.SettingsMenu));
-        }
-        else if(btns[3].contains(viewportPosition))
-        {
-            screenManager.setScreen(new MenuLevel("menu/Mitwirkende.jpg", screenManager,
-                    worldSize, MenuLevel.LevelComponentName.CreditsMenu));
+            screenManager.setScreen(new MenuLevel("menu/Titelbild.jpg", screenManager,
+                    worldSize, MenuLevel.LevelComponentName.MainMenu));
         }
 
         return super.touchUp(screenX, screenY, pointer, button);

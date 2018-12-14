@@ -10,7 +10,10 @@ public class MenuLevel extends Level
     public enum LevelComponentName
     {
         MainMenu,
-        CreditsMenu
+        CreditsMenu,
+        SettingsMenu,
+        PartyMenu,
+        PlayMenu
     }
 
     private Texture menuTex;
@@ -49,6 +52,24 @@ public class MenuLevel extends Level
             case CreditsMenu:
             {
                 menuComponent = new CreditsMenuComponent(viewport, worldSize,
+                        new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
+                break;
+            }
+            case SettingsMenu:
+            {
+                menuComponent = new SettingsMenuComponent(viewport, worldSize,
+                        new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
+                break;
+            }
+            case PartyMenu:
+            {
+                menuComponent = new PartyMenuComponent(viewport, worldSize,
+                        new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
+                break;
+            }
+            case PlayMenu:
+            {
+                menuComponent = new PlayMenuComponent(viewport, worldSize,
                         new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
                 break;
             }

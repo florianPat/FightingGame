@@ -60,6 +60,8 @@ public class TestLevel extends TileMapLevel
 
                 Utils.log("Player " + playerId + " is dead!");
                 // screenManager.setScreen(new GameOverScreen(playerId));
+                screenManager.setScreen(new MenuLevel("menu/Titelbild.jpg", screenManager,
+                    worldSize, MenuLevel.LevelComponentName.MainMenu));
             }
         };
 
