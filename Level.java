@@ -119,7 +119,7 @@ public abstract class Level implements Screen
     }
 
     /**
-    Wird aufgerufen, wenn die App pausiert (siehe libGdx-Wiki!)
+    Wird aufgerufen, wenn die App pausiert (z.B. Fenster minimiert) (siehe libGdx-Wiki!)
     */
     @Override
     public void pause()
