@@ -6,10 +6,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class PlayMenuComponent extends MenuBtnsBackComponent
 {
-    public PlayMenuComponent(ExtendViewport viewport, Vector2 worldSize, Vector2 imgSize,
-                             GameStart screenManager)
+    public PlayMenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
     {
-        super(viewport, worldSize, imgSize, screenManager);
+        super(viewport, worldSize, screenManager);
 
         btns = new Rectangle[2];
     }
@@ -32,12 +31,13 @@ public class PlayMenuComponent extends MenuBtnsBackComponent
 
         if(btns[0].contains(viewportPosition))
         {
-            //TOOD: Üben
-            screenManager.setScreen(new TestLevel(screenManager, worldSize));
+            screenManager.setScreen(new MenuLevel(screenManager, worldSize,
+                    MenuLevel.LevelComponentName.ChooseCharacterMenu, "U"));
         }
         else if(btns[1].contains(viewportPosition))
         {
-            //TODO: Online
+            screenManager.setScreen(new MenuLevel(screenManager, worldSize,
+                    MenuLevel.LevelComponentName.ChooseCharacterMenu, "O"));
         }
 
         return super.touchUp(screenX, screenY, pointer, button);

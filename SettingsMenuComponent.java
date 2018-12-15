@@ -6,10 +6,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class SettingsMenuComponent extends MenuBtnsBackComponent
 {
-    public SettingsMenuComponent(ExtendViewport viewport, Vector2 worldSize, Vector2 imgSize,
-                             GameStart screenManager)
+    public SettingsMenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
     {
-        super(viewport, worldSize, imgSize, screenManager);
+        super(viewport, worldSize, screenManager);
 
         btns = new Rectangle[2];
     }

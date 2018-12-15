@@ -8,10 +8,9 @@ class CreditsMenuComponent extends MenuComponent
 {
     private Rectangle backBtn;
 
-    public CreditsMenuComponent(ExtendViewport viewport, Vector2 worldSize, Vector2 imgSize,
-                                GameStart screenManager)
+    public CreditsMenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
     {
-        super(viewport, worldSize, imgSize, screenManager);
+        super(viewport, worldSize, screenManager);
     }
 
     public void resetBtns()
@@ -22,6 +21,8 @@ class CreditsMenuComponent extends MenuComponent
     @Override
     public void recalculateBtnPositions()
     {
+        super.recalculateBtnPositions();
+
         resetBtns();
 
         float scaleX = worldSize.x / imgSize.x;
@@ -61,7 +62,7 @@ class CreditsMenuComponent extends MenuComponent
 
         if(backBtn.contains(viewportPosition))
         {
-            screenManager.setScreen(new MenuLevel("menu/Titelbild.jpg", screenManager,
+            screenManager.setScreen(new MenuLevel(screenManager,
                     worldSize, MenuLevel.LevelComponentName.MainMenu));
         }
 

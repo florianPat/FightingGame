@@ -13,7 +13,8 @@ public class MenuLevel extends Level
         CreditsMenu,
         SettingsMenu,
         PartyMenu,
-        PlayMenu
+        PlayMenu,
+        ChooseCharacterMenu
     }
 
     private Texture menuTex;
@@ -22,62 +23,81 @@ public class MenuLevel extends Level
     private Vector2 worldSize;
     private MenuComponent menuComponent;
     private LevelComponentName levelComponentName;
+    private Object menuComponentArg = null;
 
-    public MenuLevel(String menuTexName, GameStart screenManager, Vector2 worldSize,
-                     LevelComponentName levelComponentName)
+    public MenuLevel(GameStart screenManager, Vector2 worldSize, LevelComponentName levelComponentName)
     {
         super(screenManager, worldSize);
-        this.menuTexName = menuTexName;
         this.worldSize = worldSize;
         this.levelComponentName = levelComponentName;
+    }
+
+    public MenuLevel(GameStart screenManager, Vector2 worldSize, LevelComponentName levelComponentName,
+            Object menuComponentArg)
+    {
+        this(screenManager, worldSize, levelComponentName);
+
+        if(menuComponentArg != null)
+            this.menuComponentArg = menuComponentArg;
     }
 
     @Override
     public void create()
     {
+        switch(levelComponentName)
+        {
+            case MainMenu:
+            {
+                menuTexName = "menu/Titelbild.jpg";
+                menuComponent = new MainMenuComponent(viewport, worldSize, screenManager);
+                break;
+            }
+            case CreditsMenu:
+            {
+                menuTexName = "menu/Mitwirkende.jpg";
+                menuComponent = new CreditsMenuComponent(viewport, worldSize, screenManager);
+                break;
+            }
+            case SettingsMenu:
+            {
+                menuTexName = "menu/Einstellungen.png";
+                menuComponent = new SettingsMenuComponent(viewport, worldSize, screenManager);
+                break;
+            }
+            case PartyMenu:
+            {
+                menuTexName = "menu/PartyModus.jpg";
+                menuComponent = new PartyMenuComponent(viewport, worldSize, screenManager);
+                break;
+            }
+            case PlayMenu:
+            {
+                menuTexName = "menu/Spielen.jpg";
+                menuComponent = new PlayMenuComponent(viewport, worldSize, screenManager);
+                break;
+            }
+            case ChooseCharacterMenu:
+            {
+                menuTexName = "menu/SpielfigurenAuswahl.jpg";
+                Utils.aassert(menuComponentArg != null);
+                menuComponent = new ChooseCharacterMenuComponent(viewport, worldSize, screenManager,
+                    menuComponentArg);
+                break;
+            }
+            default:
+            {
+                Utils.invalidCodePath();
+                break;
+            }
+        }
+
         assetManager.load(menuTexName, Texture.class);
         assetManager.finishLoading();
         menuTex = assetManager.get(menuTexName);
 
         menuSprite = new Sprite(menuTex);
 
-        switch(levelComponentName)
-        {
-            case MainMenu:
-            {
-                menuComponent = new MainMenuComponent(viewport, worldSize,
-                        new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
-                break;
-            }
-            case CreditsMenu:
-            {
-                menuComponent = new CreditsMenuComponent(viewport, worldSize,
-                        new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
-                break;
-            }
-            case SettingsMenu:
-            {
-                menuComponent = new SettingsMenuComponent(viewport, worldSize,
-                        new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
-                break;
-            }
-            case PartyMenu:
-            {
-                menuComponent = new PartyMenuComponent(viewport, worldSize,
-                        new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
-                break;
-            }
-            case PlayMenu:
-            {
-                menuComponent = new PlayMenuComponent(viewport, worldSize,
-                        new Vector2(menuSprite.getWidth(), menuSprite.getHeight()), screenManager);
-                break;
-            }
-            default:
-            {
-                Utils.invalidCodePath();
-            }
-        }
+        menuComponent.setImgSize(new Vector2(menuSprite.getWidth(), menuSprite.getHeight()));
 
         Gdx.input.setInputProcessor(menuComponent);
     }

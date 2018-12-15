@@ -6,10 +6,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class PartyMenuComponent extends MenuBtnsBackComponent
 {
-    public PartyMenuComponent(ExtendViewport viewport, Vector2 worldSize, Vector2 imgSize,
-                             GameStart screenManager)
+    public PartyMenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
     {
-        super(viewport, worldSize, imgSize, screenManager);
+        super(viewport, worldSize, screenManager);
 
         btns = new Rectangle[1];
     }
@@ -31,7 +30,9 @@ public class PartyMenuComponent extends MenuBtnsBackComponent
 
         if(btns[0].contains(viewportPosition))
         {
-            //TODO: Über Wlan mit Freunden!
+            Utils.log("No party here!");
+            //screenManager.setScreen(new MenuLevel(screenManager, worldSize,
+            //        MenuLevel.LevelComponentName.ChooseCharacterMenu, "P"));
         }
 
         return super.touchUp(screenX, screenY, pointer, button);

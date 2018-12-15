@@ -8,10 +8,9 @@ class MainMenuComponent extends MenuComponent
 {
     private Rectangle btns[] = new Rectangle[4];
 
-    public MainMenuComponent(ExtendViewport viewport, Vector2 worldSize, Vector2 imgSize,
-                             GameStart screenManager)
+    public MainMenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
     {
-        super(viewport, worldSize, imgSize, screenManager);
+        super(viewport, worldSize, screenManager);
     }
 
     public void resetBtns()
@@ -29,6 +28,8 @@ class MainMenuComponent extends MenuComponent
     @Override
     public void recalculateBtnPositions()
     {
+        super.recalculateBtnPositions();
+
         resetBtns();
 
         float scaleX = worldSize.x / imgSize.x;
@@ -73,22 +74,22 @@ class MainMenuComponent extends MenuComponent
 
         if(btns[0].contains(viewportPosition))
         {
-            screenManager.setScreen(new MenuLevel("menu/Spielen.jpg", screenManager,
+            screenManager.setScreen(new MenuLevel(screenManager,
                     worldSize, MenuLevel.LevelComponentName.PlayMenu));
         }
         else if(btns[1].contains(viewportPosition))
         {
-            screenManager.setScreen(new MenuLevel("menu/PartyModus.jpg", screenManager,
+            screenManager.setScreen(new MenuLevel(screenManager,
                     worldSize, MenuLevel.LevelComponentName.PartyMenu));
         }
         else if(btns[2].contains(viewportPosition))
         {
-            screenManager.setScreen(new MenuLevel("menu/Einstellungen.png", screenManager,
+            screenManager.setScreen(new MenuLevel(screenManager,
                     worldSize, MenuLevel.LevelComponentName.SettingsMenu));
         }
         else if(btns[3].contains(viewportPosition))
         {
-            screenManager.setScreen(new MenuLevel("menu/Mitwirkende.jpg", screenManager,
+            screenManager.setScreen(new MenuLevel(screenManager,
                     worldSize, MenuLevel.LevelComponentName.CreditsMenu));
         }
 

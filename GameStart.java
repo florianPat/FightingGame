@@ -17,6 +17,6 @@ public class GameStart extends Game
     @Override
     public void create()
     {
-        setScreen(new MenuLevel("menu/Titelbild.jpg", this, worldSize, MenuLevel.LevelComponentName.MainMenu));
+        setScreen(new MenuLevel(this, worldSize, MenuLevel.LevelComponentName.MainMenu));
     }
 }

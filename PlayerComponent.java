@@ -36,10 +36,12 @@ public class PlayerComponent extends AnimationComponent {
     private float maxJumpTime = 0.35f;
 
     private float smashTimer = 0.0f;
-    private final float maxSmashTimer = 1.0f;
+    private final float maxSmashTimer = 0.125f;
     private JumpState smashState = JumpState.NONE;
     private short nJumps = 3;
 
+    private Texture textureSmashLeft;
+    private Texture textureSmashRight;
     private Texture textureSmash;
     private Rectangle rectSmash;
     private Collider colliderSmash;
@@ -106,8 +108,9 @@ public class PlayerComponent extends AnimationComponent {
 
         camera = cameraIn;
 
-        // 8 or 3
-        textureSmash = assetManager.get(textureAtlas[8]);
+        textureSmashLeft = assetManager.get(textureAtlas[9]);
+        textureSmashRight = assetManager.get(textureAtlas[10]);
+        textureSmash = textureSmashLeft;
 
         //create body
         rect = new Rectangle();
@@ -277,13 +280,13 @@ public class PlayerComponent extends AnimationComponent {
         if(smashState == JumpState.JUMPING)
         {
             current = textureSmash;
-            // smashTimer += dt;
-            // if(smashTimer > maxSmashTimer)
-            // {
-            //     smashTimer = 0.0f;
-            //     smashState = JumpState.NONE;
-            //     bodySmash.setIsActive(false);
-            // }
+            smashTimer += dt;
+            if(smashTimer > maxSmashTimer)
+            {
+                smashTimer = 0.0f;
+                smashState = JumpState.NONE;
+                bodySmash.setIsActive(false);
+            }
             bodySmash.setIsActive(false);
             smashState = JumpState.NONE;
         }
@@ -365,7 +368,7 @@ public class PlayerComponent extends AnimationComponent {
             if(playerId == 0 ? inputSystem.isHitPressed() : Gdx.input.isKeyJustPressed(input[3])
                     && smashState == JumpState.NONE)
             {
-                textureSmash = walkState == WalkState.RIGHT ? animation.get("right-walk").getKeyFrame(0.0f, true) : animation.get("left-walk").getKeyFrame(0.0f, true);
+                textureSmash = walkState == WalkState.RIGHT ? textureSmashRight : textureSmashLeft;
                 current = textureSmash;
                 bodySmash.setIsActive(true);
                 smashState = JumpState.JUMPING;

@@ -6,10 +6,15 @@ public class TestLevel extends TileMapLevel
     private final int playerCount = 2;
     private Function deadFlaggedFunction;
     private HeartComponent[] heartComponents;
+    private char[] playerNumbers;
 
-    public TestLevel(GameStart screenManager, Vector2 worldSize)
+    public TestLevel(GameStart screenManager, Vector2 worldSize, char player0, char player1)
     {
         super("maps/map2.txt", screenManager, worldSize);
+
+        playerNumbers = new char[playerCount];
+        playerNumbers[0] = player0;
+        playerNumbers[1] = player1;
     }
 
     @Override
@@ -26,7 +31,7 @@ public class TestLevel extends TileMapLevel
 
     private void createPlayer(String playerName, int n)
     {
-        String[] textureAtlas = new String[9];
+        String[] textureAtlas = new String[11];
         for(int i = 0; i < textureAtlas.length; ++i)
         {
             textureAtlas[i] = playerName + "/" + (i+1) + ".png";
@@ -47,7 +52,7 @@ public class TestLevel extends TileMapLevel
 
         for(int i = 0; i < playerCount; ++i)
         {
-            createPlayer("player1", i);
+            createPlayer("player" + playerNumbers[i], i);
         }
 
         deadFlaggedFunction = new Function() {
@@ -60,7 +65,7 @@ public class TestLevel extends TileMapLevel
 
                 Utils.log("Player " + playerId + " is dead!");
                 // screenManager.setScreen(new GameOverScreen(playerId));
-                screenManager.setScreen(new MenuLevel("menu/Titelbild.jpg", screenManager,
+                screenManager.setScreen(new MenuLevel(screenManager,
                     worldSize, MenuLevel.LevelComponentName.MainMenu));
             }
         };
