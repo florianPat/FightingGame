@@ -8,6 +8,9 @@ USER INSTRUCTIONS: player 1 controls: arrow keys (left, right) to move, up for j
 
 ----------------------------------------------------------------
 
+Wichtig vorweg: In BlueJ kann der Fehler "no OpenGL Context" auftreten. Dann muss
+Bluej neu gestartet werden und alles funktioniert wieder!
+
 Nur Methoden, welche innerhalb des Javadocs dokumentiert sind, und der Engine angehöhren (die Klassen die hier beschrieben werden), sollten aufgerufen werden. Die anderen werden intern von der Engine benutzt! (Oder sind "Spiel-Klassen")
 Beschreibung der einzelnen Klassen:
 
