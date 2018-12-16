@@ -8,9 +8,9 @@ class CreditsMenuComponent extends MenuComponent
 {
     private Rectangle backBtn;
 
-    public CreditsMenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
+    public CreditsMenuComponent(ExtendViewport viewport, GameStart screenManager)
     {
-        super(viewport, worldSize, screenManager);
+        super(viewport, screenManager);
     }
 
     public void resetBtns()
@@ -25,8 +25,8 @@ class CreditsMenuComponent extends MenuComponent
 
         resetBtns();
 
-        float scaleX = worldSize.x / imgSize.x;
-        float scaleY = worldSize.y / imgSize.y;
+        float scaleX = viewport.getWorldWidth() / imgSize.x;
+        float scaleY = viewport.getWorldHeight() / imgSize.y;
 
         Vector2 origin = new Vector2(backBtn.getX() + (backBtn.getWidth() / 2.0f),
                 backBtn.getY() + (backBtn.getHeight() / 2.0f));
@@ -63,7 +63,7 @@ class CreditsMenuComponent extends MenuComponent
         if(backBtn.contains(viewportPosition))
         {
             screenManager.setScreen(new MenuLevel(screenManager,
-                    worldSize, MenuLevel.LevelComponentName.MainMenu));
+                    MenuLevel.LevelComponentName.MainMenu));
         }
 
         return super.touchUp(screenX, screenY, pointer, button);

@@ -20,22 +20,20 @@ public class MenuLevel extends Level
     private Texture menuTex;
     private Sprite menuSprite;
     private String menuTexName;
-    private Vector2 worldSize;
     private MenuComponent menuComponent;
     private LevelComponentName levelComponentName;
     private Object menuComponentArg = null;
 
-    public MenuLevel(GameStart screenManager, Vector2 worldSize, LevelComponentName levelComponentName)
+    public MenuLevel(GameStart screenManager, LevelComponentName levelComponentName)
     {
-        super(screenManager, worldSize);
-        this.worldSize = worldSize;
+        super(screenManager);
         this.levelComponentName = levelComponentName;
     }
 
-    public MenuLevel(GameStart screenManager, Vector2 worldSize, LevelComponentName levelComponentName,
+    public MenuLevel(GameStart screenManager, LevelComponentName levelComponentName,
             Object menuComponentArg)
     {
-        this(screenManager, worldSize, levelComponentName);
+        this(screenManager, levelComponentName);
 
         if(menuComponentArg != null)
             this.menuComponentArg = menuComponentArg;
@@ -49,38 +47,38 @@ public class MenuLevel extends Level
             case MainMenu:
             {
                 menuTexName = "menu/Titelbild.jpg";
-                menuComponent = new MainMenuComponent(viewport, worldSize, screenManager);
+                menuComponent = new MainMenuComponent(viewport, screenManager);
                 break;
             }
             case CreditsMenu:
             {
                 menuTexName = "menu/Mitwirkende.jpg";
-                menuComponent = new CreditsMenuComponent(viewport, worldSize, screenManager);
+                menuComponent = new CreditsMenuComponent(viewport, screenManager);
                 break;
             }
             case SettingsMenu:
             {
                 menuTexName = "menu/Einstellungen.png";
-                menuComponent = new SettingsMenuComponent(viewport, worldSize, screenManager);
+                menuComponent = new SettingsMenuComponent(viewport, screenManager);
                 break;
             }
             case PartyMenu:
             {
                 menuTexName = "menu/PartyModus.jpg";
-                menuComponent = new PartyMenuComponent(viewport, worldSize, screenManager);
+                menuComponent = new PartyMenuComponent(viewport, screenManager);
                 break;
             }
             case PlayMenu:
             {
                 menuTexName = "menu/Spielen.jpg";
-                menuComponent = new PlayMenuComponent(viewport, worldSize, screenManager);
+                menuComponent = new PlayMenuComponent(viewport, screenManager);
                 break;
             }
             case ChooseCharacterMenu:
             {
                 menuTexName = "menu/SpielfigurenAuswahl.jpg";
                 Utils.aassert(menuComponentArg != null);
-                menuComponent = new ChooseCharacterMenuComponent(viewport, worldSize, screenManager,
+                menuComponent = new ChooseCharacterMenuComponent(viewport, screenManager,
                     menuComponentArg);
                 break;
             }
@@ -125,7 +123,7 @@ public class MenuLevel extends Level
     {
         super.resize(width, height);
 
-        menuSprite.setSize(worldSize.x, worldSize.y);
+        menuSprite.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());
         menuComponent.recalculateBtnPositions();
     }
 

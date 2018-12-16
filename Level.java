@@ -13,7 +13,10 @@ public abstract class Level implements Screen
 {
     protected OrthographicCamera camera;
     /**
-    Benutzen, um die worldWidth / worldHeight zu bekommen
+    Benutzen, um die worldWidth / worldHeight zu bekommen (oder über die Kanera
+    viewportWidth / viewportHeight) !!!WICHTIG!!!: Nicht cachen (also in eine
+    Variable im Konstruktor speichern. Dort wurde resize noch nicht
+    aufgerufen und die Werte sind 0!!!!)
     */
     protected ExtendViewport viewport;
     /**
@@ -34,12 +37,11 @@ public abstract class Level implements Screen
     /**
     Siehe Erklärung unter Main!
     */
-    protected Vector2 worldSize;
+    private final Vector2 worldSize = new Vector2(900.0f, 600.0f);
 
-    public Level(GameStart screenManager, Vector2 worldSize)
+    public Level(GameStart screenManager)
     {
         this.screenManager = screenManager;
-        this.worldSize = worldSize;
     }
 
     /**
@@ -105,9 +107,6 @@ public abstract class Level implements Screen
     public void resize(int width, int height)
     {
         viewport.update(width, height, true);
-
-        worldSize.x = viewport.getWorldWidth();
-        worldSize.y = viewport.getWorldHeight();
     }
 
     /**

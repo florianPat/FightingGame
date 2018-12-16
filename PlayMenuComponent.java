@@ -6,9 +6,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class PlayMenuComponent extends MenuBtnsBackComponent
 {
-    public PlayMenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
+    public PlayMenuComponent(ExtendViewport viewport, GameStart screenManager)
     {
-        super(viewport, worldSize, screenManager);
+        super(viewport, screenManager);
 
         btns = new Rectangle[2];
     }
@@ -31,12 +31,12 @@ public class PlayMenuComponent extends MenuBtnsBackComponent
 
         if(btns[0].contains(viewportPosition))
         {
-            screenManager.setScreen(new MenuLevel(screenManager, worldSize,
+            screenManager.setScreen(new MenuLevel(screenManager,
                     MenuLevel.LevelComponentName.ChooseCharacterMenu, "U"));
         }
         else if(btns[1].contains(viewportPosition))
         {
-            screenManager.setScreen(new MenuLevel(screenManager, worldSize,
+            screenManager.setScreen(new MenuLevel(screenManager,
                     MenuLevel.LevelComponentName.ChooseCharacterMenu, "O"));
         }
 

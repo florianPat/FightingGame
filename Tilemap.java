@@ -78,8 +78,7 @@ public class Tilemap {
     Erstellt eine Tilemap von einer Textdatei.
     @param filename Der Textdateiname der Tilemap, welche eingelesen wird und danach gerendert werden kann
     */
-    public Tilemap(String filename, AssetManager assetManager, Physics physics, GameStart screenManager,
-                   Vector2 worldSize)
+    public Tilemap(String filename, AssetManager assetManager, Physics physics, GameStart screenManager)
     {
         this.physics = physics;
 

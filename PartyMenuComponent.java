@@ -6,9 +6,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class PartyMenuComponent extends MenuBtnsBackComponent
 {
-    public PartyMenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
+    public PartyMenuComponent(ExtendViewport viewport, GameStart screenManager)
     {
-        super(viewport, worldSize, screenManager);
+        super(viewport, screenManager);
 
         btns = new Rectangle[1];
     }
@@ -31,7 +31,7 @@ public class PartyMenuComponent extends MenuBtnsBackComponent
         if(btns[0].contains(viewportPosition))
         {
             Utils.log("No party here!");
-            //screenManager.setScreen(new MenuLevel(screenManager, worldSize,
+            //screenManager.setScreen(new MenuLevel(screenManager,
             //        MenuLevel.LevelComponentName.ChooseCharacterMenu, "P"));
         }
 

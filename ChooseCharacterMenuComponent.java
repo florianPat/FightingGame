@@ -6,10 +6,10 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class ChooseCharacterMenuComponent extends MenuBtnsBackComponent
 {
-    public ChooseCharacterMenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager,
+    public ChooseCharacterMenuComponent(ExtendViewport viewport, GameStart screenManager,
             Object componentArg)
     {
-        super(viewport, worldSize, screenManager, componentArg);
+        super(viewport, screenManager, componentArg);
 
         btns = new Rectangle[2];
     }
@@ -56,13 +56,13 @@ public class ChooseCharacterMenuComponent extends MenuBtnsBackComponent
                 {
                     case 'U':
                     {
-                        //TODO: Set Üben Screen
-                        Utils.log("Ueben Screen!");
+                        screenManager.setScreen(new PracticeLevel(screenManager,
+                            playerId));
                         break;
                     }
                     case 'O':
                     {
-                        screenManager.setScreen(new MenuLevel(screenManager, worldSize,
+                        screenManager.setScreen(new MenuLevel(screenManager,
                         MenuLevel.LevelComponentName.ChooseCharacterMenu,
                         s + playerId));
                         break;
@@ -78,7 +78,7 @@ public class ChooseCharacterMenuComponent extends MenuBtnsBackComponent
             case 2:
             {
                 char player0 = s.charAt(1);
-                screenManager.setScreen(new TestLevel(screenManager, worldSize, player0, playerId));
+                screenManager.setScreen(new TestLevel(screenManager, player0, playerId));
                 break;
             }
             default:

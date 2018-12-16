@@ -11,24 +11,22 @@ abstract class MenuComponent extends InputAdapter
 {
     protected ExtendViewport viewport;
     protected ShapeRenderer renderer;
-    protected Vector2 worldSize;
     protected Vector2 imgSize = null;
     protected GameStart screenManager;
     protected Object componentArg = null;
 
-    public MenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
+    public MenuComponent(ExtendViewport viewport, GameStart screenManager)
     {
         this.viewport = viewport;
-        this.worldSize = worldSize;
         this.imgSize = imgSize;
         renderer = new ShapeRenderer();
         this.screenManager = screenManager;
     }
 
-    public MenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager,
+    public MenuComponent(ExtendViewport viewport, GameStart screenManager,
             Object componentArg)
     {
-        this(viewport, worldSize, screenManager);
+        this(viewport, screenManager);
 
         this.componentArg = componentArg;
     }

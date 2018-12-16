@@ -31,7 +31,7 @@ public class Utils
     /**
     Einen Fehler in der Konsole ausgeben und das Programm beenden.
     */
-    public static void logBreak(String msg, GameStart screenManager, Vector2 worldSize)
+    public static void logBreak(String msg, GameStart screenManager)
     {
         Gdx.app.log("UtilsLogBreak", msg);
         invalidCodePath();

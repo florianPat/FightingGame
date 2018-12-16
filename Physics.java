@@ -236,7 +236,7 @@ public class Physics
     /**
     Liefert alle BodyId`s, welche den string enthalten
     */
-    ArrayList<String> getAllCollisionIdsWhichContain(String string)
+    public ArrayList<String> getAllCollisionIdsWhichContain(String string)
     {
         ArrayList<String> result = new ArrayList<String>();
 

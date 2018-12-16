@@ -4,11 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameStart extends Game
 {
-    private Vector2 worldSize;
-
-    public GameStart(Vector2 worldSize)
+    public GameStart()
     {
-        this.worldSize = worldSize;
     }
 
     /**
@@ -17,6 +14,6 @@ public class GameStart extends Game
     @Override
     public void create()
     {
-        setScreen(new MenuLevel(this, worldSize, MenuLevel.LevelComponentName.MainMenu));
+        setScreen(new MenuLevel(this, MenuLevel.LevelComponentName.MainMenu));
     }
 }

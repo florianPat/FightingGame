@@ -8,9 +8,9 @@ class MainMenuComponent extends MenuComponent
 {
     private Rectangle btns[] = new Rectangle[4];
 
-    public MainMenuComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
+    public MainMenuComponent(ExtendViewport viewport, GameStart screenManager)
     {
-        super(viewport, worldSize, screenManager);
+        super(viewport, screenManager);
     }
 
     public void resetBtns()
@@ -32,8 +32,8 @@ class MainMenuComponent extends MenuComponent
 
         resetBtns();
 
-        float scaleX = worldSize.x / imgSize.x;
-        float scaleY = worldSize.y / imgSize.y;
+        float scaleX = viewport.getWorldWidth() / imgSize.x;
+        float scaleY = viewport.getWorldHeight() / imgSize.y;
 
         for(Rectangle btn : btns)
         {
@@ -75,22 +75,22 @@ class MainMenuComponent extends MenuComponent
         if(btns[0].contains(viewportPosition))
         {
             screenManager.setScreen(new MenuLevel(screenManager,
-                    worldSize, MenuLevel.LevelComponentName.PlayMenu));
+                    MenuLevel.LevelComponentName.PlayMenu));
         }
         else if(btns[1].contains(viewportPosition))
         {
             screenManager.setScreen(new MenuLevel(screenManager,
-                    worldSize, MenuLevel.LevelComponentName.PartyMenu));
+                    MenuLevel.LevelComponentName.PartyMenu));
         }
         else if(btns[2].contains(viewportPosition))
         {
             screenManager.setScreen(new MenuLevel(screenManager,
-                    worldSize, MenuLevel.LevelComponentName.SettingsMenu));
+                    MenuLevel.LevelComponentName.SettingsMenu));
         }
         else if(btns[3].contains(viewportPosition))
         {
             screenManager.setScreen(new MenuLevel(screenManager,
-                    worldSize, MenuLevel.LevelComponentName.CreditsMenu));
+                    MenuLevel.LevelComponentName.CreditsMenu));
         }
 
         return super.touchUp(screenX, screenY, pointer, button);

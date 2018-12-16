@@ -9,15 +9,15 @@ class MenuBtnsBackComponent extends MenuComponent
     protected Rectangle btns[];
     protected Rectangle backBtn;
 
-    public MenuBtnsBackComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager)
+    public MenuBtnsBackComponent(ExtendViewport viewport, GameStart screenManager)
     {
-        super(viewport, worldSize, screenManager);
+        super(viewport, screenManager);
     }
 
-    public MenuBtnsBackComponent(ExtendViewport viewport, Vector2 worldSize, GameStart screenManager,
+    public MenuBtnsBackComponent(ExtendViewport viewport, GameStart screenManager,
             Object menuArg)
     {
-        super(viewport, worldSize, screenManager, menuArg);
+        super(viewport, screenManager, menuArg);
     }
 
     public void resetBtns()
@@ -32,8 +32,8 @@ class MenuBtnsBackComponent extends MenuComponent
 
         resetBtns();
 
-        float scaleX = worldSize.x / imgSize.x;
-        float scaleY = worldSize.y / imgSize.y;
+        float scaleX = viewport.getWorldWidth() / imgSize.x;
+        float scaleY = viewport.getWorldHeight() / imgSize.y;
 
         for(Rectangle btn : btns)
         {
@@ -89,7 +89,7 @@ class MenuBtnsBackComponent extends MenuComponent
         if(backBtn.contains(viewportPosition))
         {
             screenManager.setScreen(new MenuLevel(screenManager,
-                    worldSize, MenuLevel.LevelComponentName.MainMenu));
+                    MenuLevel.LevelComponentName.MainMenu));
         }
 
         return super.touchUp(screenX, screenY, pointer, button);
